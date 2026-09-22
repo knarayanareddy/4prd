@@ -1,0 +1,53 @@
+{
+  "id": "playbook-acme-v1",
+  "rules": [
+    {
+      "id": "liability-cap",
+      "topic": "liability_cap",
+      "preferred": "Cap ≥ 12 months fees, both ways",
+      "fallback": "Cap ≥ 6 months fees, exclude IP indemnity",
+      "walkaway": "Uncapped liability or cap < 6 months fees",
+      "judge_noul": "Does this clause trigger the walkaway?"
+    },
+    {
+      "id": "data-transfer",
+      "topic": "data_transfer_extra_eea",
+      "preferred": "EEA-only or SCCs named",
+      "fallback": "Transfer with SCCs + TRA",
+      "walkaway": "Unrestricted extra-EEA transfer with no safeguards",
+      "judge_noul": "Does this clause send personal data extra-EEA without safeguards?"
+    },
+    {
+      "id": "termination-convenience",
+      "topic": "termination",
+      "preferred": "Either party, 30 days notice",
+      "fallback": "90 days notice",
+      "walkaway": "Customer may not terminate for convenience",
+      "judge_noul": "Does this clause block termination for convenience?"
+    },
+    {
+      "id": "auto-renew",
+      "topic": "auto_renewal",
+      "preferred": "Renewal only on written confirm",
+      "fallback": "Auto-renew with 60 days opt-out",
+      "walkaway": "Auto-renew with <30 days opt-out",
+      "judge_noul": "Does auto-renew lock us in?"
+    },
+    {
+      "id": "governing-law",
+      "topic": "governing_law",
+      "preferred": "Netherlands law, Amsterdam courts",
+      "fallback": "EU member state law",
+      "walkaway": "Exclusive non-EU law and venue",
+      "judge_noul": "Is governing law a walkaway?"
+    },
+    {
+      "id": "ip-assignment",
+      "topic": "ip_ownership",
+      "preferred": "Customer owns deliverables; vendor keeps background IP",
+      "fallback": "Joint ownership of deliverables",
+      "walkaway": "Vendor owns all IP in deliverables",
+      "judge_noul": "Does vendor take our IP?"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "liability_cap": "Limitation of liability / cap amount",
+  "uncapped_liability": "Liability is unlimited or uncapped",
+  "termination": "Termination for convenience or cause",
+  "ip_ownership": "IP assignment / ownership",
+  "data_transfer_extra_eea": "Personal data leaving the EEA",
+  "noncompete": "Non-compete",
+  "governing_law": "Governing law / venue",
+  "assignment": "Assignment of the contract",
+  "auto_renewal": "Auto-renewal",
+  "indemnification": "Indemnity",
+  "other": "In closed set but not a walkaway topic this run",
+  "unknown": "Insufficient evidence"
+}

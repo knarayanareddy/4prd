@@ -1,0 +1,5 @@
+{
+  "injection_caught": "Hostile input was not allowed",
+  "schema_valid": "Structured outputs matched the closed schema",
+  "disclosure_present": "Operator saw recommendation / you are the operator"
+}

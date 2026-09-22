@@ -1,0 +1,12 @@
+{
+  "ok": "Appears to be a lawful ordinary listing",
+  "counterfeit": "Fake branded goods / replica language / implausible luxury price",
+  "stolen_signal": "Serial + no box no papers + too-good price or got it from a friend",
+  "weapon": "Firearms, ammunition, illegal knives, explosives",
+  "animal": "Live animals / prohibited wildlife",
+  "pii": "Listing exposes another person's identity documents, address, phone dump",
+  "spam_duplicate": "Gibberish, scam template, obvious copy-farm",
+  "injection_or_jailbreak": "Text addresses a model/moderator system",
+  "other_illegal": "Clearly illegal but not in the buckets above — always block+human, never generate",
+  "unknown": "Insufficient evidence"
+}
