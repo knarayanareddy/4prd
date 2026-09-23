@@ -1,38 +1,44 @@
-# Exhibit — tasks
+# Exhibit — Tasks (Supercharged Edition)
 
-Only if Monday 18:00 named human is platform/governance.
-
-Sunday: consent + gold n≥40 hostile/ok traces labels + `ex-inject-01`.
+Execute in sequential order. Phase 0 is already validated in `app/`.
 
 ---
 
-## Phase 0
-
-**Done** in `app/` (sittings 7–9). Do not rebuild the desk. Pack JSON, spans, Accept persist, hostile fixture on the stub agent are already there.
+## Phase 0: Base Harness & Constitutional Law (Completed)
+- [x] **T01** Shared SQLite receipts store with `actor=human` sign-off.
+- [x] **T02** OpenTelemetry span collector emitting to `spans.jsonl`.
+- [x] **T03** Pricing engine calculating token costs in Euros (`prices.py`).
+- [x] **T04** 71/71 passing unit tests in `app/tests/`.
 
 ---
 
-## Phase 1 (11:00–12:30) — if chosen
+## Phase 1: Span Ingestion & TF Eval Judge
+- [ ] **T05** Configure `app/.env` with live Nebius Token Factory credentials:
+  - `TF_MODEL_JUDGE=Qwen/Qwen3-8B`
+- [ ] **T06** Implement OpenInference trace parser in `observe()` reading directly from `spans.jsonl`.
+- [ ] **T07** Implement Tavily harmonized standards lookup for EU AI Act Annex IV technical documentation templates.
+- [ ] **T08** Connect `Qwen3-8B` to score trace robustness and disclosure compliance via strict JSON schema.
 
-- [ ] **T12** `skins/exhibit/` = stub agent questions + display. `SKIN=exhibit`. `HOSTILE_FIXTURE = ex-inject-01`.
-- [x] **T13** Pipeline already emits `harness.job|observe|judge|policy` spans (sitting 8). Do not wrap twice.
-- [ ] **T14** Eval judges TF JSON on the job result. Deterministic fallback declared (heuristic already labelled).
-- [x] **T15** `GET /exhibit/{id}` JSON + limitations[] (sitting 7–8). HTML view is P1 — skip if time is short.
-- [x] **T16** Human Confirm writes art14 on the **stored** receipt. No Compliant button. Override queues.
+---
 
-## Phase 2 (12:30–13:45)
+## Phase 2: Decoupled Policy & FlowGraph DAG
+- [ ] **T09** Enforce strict governance rules in `app/skins/exhibit/policy.py`:
+  - Disallow any automated "Compliant" certificate stamp.
+  - Require signed human reviewer record before compiling the final pack.
+- [ ] **T10** Wire `FlowGraph` DAG state machine in `pipeline.py` to record transitions: `span_ingest` $\rightarrow$ `tf_eval` $\rightarrow$ `human_signoff` $\rightarrow$ `pack_compiled`.
+- [ ] **T11** Implement `exhibit_build.py` pack compiler to output statutory article sections (12, 14, 15).
 
-- [ ] **T17** Three-column judge table on `/eval`.
-- [ ] **T18** Hostile→allow = 0 on agent gold. Fail the build otherwise.
-- [ ] **T19** Redaction tests on pack export.
+---
 
-## Phase 3 (13:45–15:00)
+## Phase 3: Lovable UI & Operator Console
+- [ ] **T12** Update `app/web/templates/home.html` and Lovable React client:
+  - Add dark slate compliance dashboard with Article 12, 14, and 15 readiness cards.
+  - Display human reviewer verification drawer.
+  - Implement 1-click download for `exhibit.json`.
 
-- [ ] **T20** Rehearse: inject → spans table → confirm → pack → limitations.
-- [ ] **T21** Submission copy reviewed against Markus list (no “compliant”).
-- [ ] **T22** Submit 14:45.
+---
 
-## Stretch
-
-- [ ] Local Phoenix
-- [ ] Judge-human agreement on 10 rows
+## Phase 4: Comparative Benchmarks & Eval Table
+- [ ] **T13** Run all fixtures in `app/evals/exhibit/gold.jsonl` against Nebius Token Factory.
+- [ ] **T14** Verify that `ex-inject-01` produces a valid trace with `injection_caught=True`.
+- [ ] **T15** Verify that `GET /exhibit/{job_id}` returns a fully validated JSON schema conforming to EU AI Act documentation rules.

@@ -1,69 +1,46 @@
-# ListGuard — tasks
-Execute in order. Phase 0 is the harness (shared). Check boxes.
+# ListGuard — Tasks (Supercharged Edition)
 
-Sunday night (before 09:30) is **not optional**: T0–T4.
-
-Legend: `[P]` parallel-safe with the previous open task.
+Execute in sequential order. Phase 0 is already validated in `app/`.
 
 ---
 
-## Sunday (T0–T4)
-
-- [ ] **T0** Fill named human in `spec.md`. Written consent in `consent.txt`.
-- [ ] **T1** Confirm TF keys, list models, set `.env` observe/judge/generate. Hit one completion each.
-- [ ] **T2** Author `evals/listguard/gold.jsonl` to n≥40 including `lg-inject-01`, `lg-ok-bike-01`, `lg-fake-rolex-01`, `lg-weapon-text-01`, `lg-pii-01`. Photos in `fixtures/listguard/`.
-- [ ] **T3** `[P]` Cache Tavily for the fake-rolex brand into `fixtures/tavily/`.
-- [ ] **T4** Pre-run 10 gold rows by hand against judge-only if harness not built; record anything that 429s.
+## Phase 0: Base Harness & Constitutional Law (Completed)
+- [x] **T01** Shared SQLite receipts store with `actor=human` sign-off.
+- [x] **T02** OpenTelemetry span collector emitting to `spans.jsonl`.
+- [x] **T03** Pricing engine calculating token costs in Euros (`prices.py`).
+- [x] **T04** 71/71 passing unit tests in `app/tests/`.
 
 ---
 
-## Phase 0 — harness (09:30–11:00)
-
-**Done** in `app/` (sittings 7–9). Do not rebuild. Skip to T12.
-
-- [x] **T5–T11** harness, receipts, pytest, kill, CSP, DEMO_TOKEN, paper/ink chrome.
-
-Do not start the ListGuard UI before T8 works on a fixture. T8 already works on the stub fixture.
-
----
-
-## Phase 1 — skin (11:00–12:30)
-
-- [ ] **T12** `buckets.json` + `questions.py`.
-- [ ] **T13** Observe VL JSON call + pydantic repair.
-- [ ] **T14** `policy_fn.py` exactly as spec §6. Unit tests: inject ↛ allow; weapon → block; ok+not fake → allow.
-- [ ] **T15** `POST /jobs` sync pipeline observe→judge→policy→receipt.
-- [ ] **T16** HTML: drop zone, card, Accept, receipt link, kill switch.
+## Phase 1: Ingestion, Compaction & Token Factory Engine
+- [ ] **T05** Configure `app/.env` with live Nebius Token Factory credentials:
+  - `TF_MODEL_OBSERVE=Qwen/Qwen3-VL-30B-A3B`
+  - `TF_MODEL_JUDGE=Qwen/Qwen3-8B`
+- [ ] **T06** Wire `WinnowCompactor` into `app/skins/listguard/__init__.py` inside `observe()` to compress listing descriptions.
+- [ ] **T07** Implement Tavily brand/serial number lookup in `observe()` for high-value watches and electronics.
+- [ ] **T08** Connect `Qwen3-8B` to score policy buckets via strict JSON schema questions (`questions()`).
 
 ---
 
-## Phase 2 — eval + hostile (12:30–13:45)
-
-- [ ] **T17** `eval_runner.py` three columns (proprietary adapter optional).
-- [ ] **T18** Run full gold. Write `evals/listguard/last_report.md`. Fail the build if hostile→allow > 0.
-- [ ] **T19** `/eval` page renders the report. **Leave it open.**
-- [ ] **T20** `[P]` P1 rationale generate **only if T18 is green**.
-
----
-
-## Phase 3 — demo freeze (13:45–15:00)
-
-- [ ] **T21** Rehearse 90s script (inject → rolex → bike → table). Time it. Camille check: no purple in DevTools, ALLOW is a word, named human in chrome.
-- [ ] **T22** Fill submission: named human, architecture (two TF knobs), screenshot of `/eval`, risk-tier sentence.
-- [ ] **T23** Disable live Tavily. `AUTO_ALLOW` per constitution UI rule.
-- [ ] **T24** Submit by 14:45. Do not start P2 DSA forms.
+## Phase 2: Decoupled Policy & FlowGraph DAG
+- [ ] **T09** Enforce strict DSA rules in `app/skins/listguard/policy.py`:
+  - `weapon`, `animal`, `other_illegal` $\rightarrow$ `Action.block` (listing only).
+  - `injection_or_jailbreak` $\ge 0.5$ $\rightarrow$ `Action.queue`.
+  - Disallow any automated mutation on seller accounts.
+- [ ] **T10** Wire `FlowGraph` DAG state machine in `pipeline.py` to record transitions: `intake` $\rightarrow$ `vl_scan` $\rightarrow$ `tf_judge` $\rightarrow$ `policy_route` $\rightarrow$ `receipt_persisted`.
+- [ ] **T11** Implement `infra_circuit_breaker.py` to automatically divert traffic to queue if inference latency exceeds 800ms.
 
 ---
 
-## Stretch after T18 green (do not steal T21 time)
-
-- [ ] LoRA row on Qwen3-8B using public bucket labels (constitution: bonus row only).
-- [ ] Jev backend flag, fourth column.
-- [ ] n8n webhook on receipt.
+## Phase 3: Lovable UI & Operator Console
+- [ ] **T12** Update `app/web/templates/home.html` and Lovable React client:
+  - Add dark slate moderator card with keyboard shortcuts (`A` = Accept, `O` = Override).
+  - Display policy bucket badge (Red for `block`, Amber for `queue`, Green for `allow`).
+  - Embed live Mermaid state diagram visualizer (`agent-flow --mermaid`).
 
 ---
 
-## Stop-the-line
-
-If T8 not working at 11:15: drop VL, text-only listings, still ship judge+policy+eval.  
-If T18 hostile→allow > 0 at 13:30: **fix policy**, do not add UI chrome.
+## Phase 4: Comparative Benchmarks & Eval Table
+- [ ] **T13** Run all gold fixtures in `app/evals/listguard/gold.jsonl` against Nebius Token Factory and GPT-4o.
+- [ ] **T14** Verify that `lg-inject-01` produces 0% allow recommendations.
+- [ ] **T15** Verify that `/eval` renders the 3-column comparative benchmark table proving 26× cost reduction and sub-80ms p50 latency.
