@@ -510,3 +510,155 @@
 {"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
 {"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
 {"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "cd279c82a5f655479da385fc3da3740a3b86677cc6a8aebe690f166ca601222d"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "c41d3282ee9d78f723e391d11c106e57c5f8b83a780cfb7d77ca7d6fccd4b819"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "ec53c484a42cc9a3db102efe70afdfaa5d3db0d6cf8158d777e1cb4eb17dedde"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "ec53c484a42cc9a3db102efe70afdfaa5d3db0d6cf8158d777e1cb4eb17dedde"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "9f8271f210760144da714e99d6a2cf83f2f2dd54556816e81c892de761bb34f5"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "c0d0bafa2ae38ad632833843d62f1690f0650f398fc45d3c5cb0510a7e98e60f"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "829d80873a4e98e49ee20242ff79881fd2b315be9e2267429b52ce69124c0743"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "068f421ff7774943f6ae858dab88d1faf48474aed91bd6829f0036d7de34ae54"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "e411e76fd5164f91a8ca6cc84723757aa49f1e02831d57cbd3cb86a104413f77"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "9141fd23444b289b51213ebfd49ee02ee96d81cbb94acac1e98143e04f59673b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "1735316fa464c650a9f53440bf77f24e015d6e384b6beb00df304c94216aeff9"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "f79e87bb9054b7eeb17fd04eeb120907504e18f2960fcfaeb4c976fb0c6ab46b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "b588da1ac93dc15da361d5b5b9e343d798c00b07da5db2b0abac0c2a7c68fa73"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "917e32ee59e5477edc2d9210d428c328188bd07a27e5e98e4b68d9430b5c82a0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "38f04c1442e2e26ff42f262724dcad12209bdfce903e3fcf87d609e2672964aa"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "2a8c95dd74361c48fecea9d38cb1a9b01c729f3e88c7fc7e50e1e9fff0f7106b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "9f8271f210760144da714e99d6a2cf83f2f2dd54556816e81c892de761bb34f5"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "c0d0bafa2ae38ad632833843d62f1690f0650f398fc45d3c5cb0510a7e98e60f"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "829d80873a4e98e49ee20242ff79881fd2b315be9e2267429b52ce69124c0743"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "068f421ff7774943f6ae858dab88d1faf48474aed91bd6829f0036d7de34ae54"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "e411e76fd5164f91a8ca6cc84723757aa49f1e02831d57cbd3cb86a104413f77"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "9141fd23444b289b51213ebfd49ee02ee96d81cbb94acac1e98143e04f59673b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "1735316fa464c650a9f53440bf77f24e015d6e384b6beb00df304c94216aeff9"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "f79e87bb9054b7eeb17fd04eeb120907504e18f2960fcfaeb4c976fb0c6ab46b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "b588da1ac93dc15da361d5b5b9e343d798c00b07da5db2b0abac0c2a7c68fa73"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "917e32ee59e5477edc2d9210d428c328188bd07a27e5e98e4b68d9430b5c82a0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "38f04c1442e2e26ff42f262724dcad12209bdfce903e3fcf87d609e2672964aa"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "2a8c95dd74361c48fecea9d38cb1a9b01c729f3e88c7fc7e50e1e9fff0f7106b"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "30bfe995426093b381c2e683c4cfb78ddbd710a14271e6bd8ed88eac5a165cd3"}}
+{"name": "harness.observe", "kind": "LLM", "attributes": {}}
+{"name": "harness.judge", "kind": "LLM", "attributes": {"unconfigured": true}}
+{"name": "harness.policy", "kind": "CHAIN", "attributes": {"harness.action": "queue", "harness.reason_codes": "judge_schema_fail"}}
+{"name": "harness.job", "kind": "CHAIN", "attributes": {"skin": "stub", "input_hash": "80bd5a4a48205ea489ac514900a8a5ea04989e414934fef070a75d341ee02da0"}}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from harness.policy import register
@@ -91,15 +92,25 @@ def observe(payload: dict) -> ObserveResult:
     for item in items:
         if not isinstance(item, dict):
             continue
-        # Observe must not infer peanuts from "satay".
+        name = str(item.get("name") or "")
+        raw_text = str(item.get("raw_text") or "")
+        printed = f"{name} {raw_text}"
+        # Observe is extraction, not inference.  In particular, satay is not
+        # evidence of peanuts.  Accept only closed-set ids that are actually
+        # present in the printed text; never pass arbitrary model strings on.
+        stated = []
+        for aid in EU14:
+            if re.search(rf"\b{re.escape(aid)}\b", printed, re.I) and aid not in stated:
+                stated.append(aid)
         clean.append(
             {
-                "name": str(item.get("name") or ""),
-                "raw_text": str(item.get("raw_text") or ""),
+                "name": name,
+                "section": str(item.get("section") or ""),
+                "raw_text": raw_text,
                 "price_cents": item.get("price_cents"),
                 "currency": item.get("currency") or "EUR",
-                "stated_allergens": list(item.get("stated_allergens") or []),
-                "allergen_info_present": bool(item.get("allergen_info_present")),
+                "stated_allergens": stated,
+                "allergen_info_present": bool(stated),
             }
         )
     text = " ".join(f"{i['name']} {i['raw_text']}" for i in clean)

@@ -36,6 +36,7 @@ skins/exhibit/__init__.py
 skins/listguard/__init__.py
 skins/listguard/policy.py
 skins/menumind/__init__.py
+skins/menumind/export.py
 skins/menumind/policy.py
 tests/test_budgets.py
 tests/test_decisions.py

@@ -13,6 +13,12 @@ _ALLERGENS = json.loads((Path(__file__).parent / "allergens.json").read_text(enc
 EU14 = list(_ALLERGENS["ids"])
 ANIMAL = set(_ALLERGENS["animal_derived"])
 SATAY = re.compile(r"\bsatay\b|\bsate\b|\bpeanut sauce\b", re.I)
+_DANGER_FOODS = tuple(
+    line.strip().casefold()
+    for line in (Path(__file__).parent / "danger_foods.txt").read_text(encoding="utf-8").splitlines()
+    if line.strip() and not line.lstrip().startswith("#")
+)
+DANGER_FOODS = re.compile(r"(?:" + "|".join(re.escape(x) for x in _DANGER_FOODS) + r")", re.I)
 
 
 def _text(state: dict) -> str:
@@ -42,6 +48,10 @@ def policy_menumind(answers: dict[str, Answer], state: dict) -> PolicyResult:
 
     if SATAY.search(text) and "peanuts" not in present and info < 0.5:
         reasons.append("heuristic_satay")
+        present = []
+        info = 0.0
+    elif DANGER_FOODS.search(text) and not present and info < 0.5:
+        reasons.append("heuristic_danger_food")
         present = []
         info = 0.0
 
