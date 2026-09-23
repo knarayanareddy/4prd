@@ -25,6 +25,9 @@ class Settings:
     tf_endpoint_judge: str
     decision_backend: str
     auto_allow: bool
+    tavily_api_key: str = ""
+    jev_api_key: str = ""
+    jev_base_url: str = ""
 
     @property
     def is_demo(self) -> bool:
@@ -41,11 +44,14 @@ def load_settings() -> Settings:
         demo_token=_env("DEMO_TOKEN"),
         tf_base_url=_env("TF_BASE_URL"),
         tf_api_key=_env("TF_API_KEY"),
-        tf_model_observe=_env("TF_MODEL_OBSERVE", "Qwen/Qwen3-VL-8B-Instruct"),
-        tf_model_judge=_env("TF_MODEL_JUDGE", "Qwen/Qwen3-8B"),
-        tf_model_generate=_env("TF_MODEL_GENERATE", "Qwen/Qwen3-8B"),
+        tf_model_observe=_env("TF_MODEL_OBSERVE", "zai-org/GLM-5.3-Flash"),
+        tf_model_judge=_env("TF_MODEL_JUDGE", "Qwen/Qwen3-30B-A3B-Instruct-2507"),
+        tf_model_generate=_env("TF_MODEL_GENERATE", "zai-org/GLM-5.3-Flash"),
         tf_endpoint_observe=_env("TF_ENDPOINT_OBSERVE"),
         tf_endpoint_judge=_env("TF_ENDPOINT_JUDGE"),
         decision_backend=_env("DECISION_BACKEND", "tf_json"),
         auto_allow=_env("AUTO_ALLOW", "0") == "1",
+        tavily_api_key=_env("TAVILY_API_KEY"),
+        jev_api_key=_env("JEV_API_KEY"),
+        jev_base_url=_env("JEV_BASE_URL", "https://api.typesafe.ai/v1"),
     )

@@ -47,8 +47,7 @@ def build_backend(settings: Settings, client: TFClient) -> DecisionBackend:
         try:
             from harness.backends.jev import JevBackend
 
-            _ = JevBackend()
-            # Not wired: fall through. Never crash the demo.
+            return JevBackend(api_key=settings.jev_api_key, base_url=settings.jev_base_url)
         except Exception:
             pass
     return TfJsonBackend(client)

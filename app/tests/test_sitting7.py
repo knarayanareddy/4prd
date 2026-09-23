@@ -56,4 +56,4 @@ def test_jev_flag_does_not_crash(monkeypatch):
 
     settings = load_settings()
     backend = build_backend(settings, TFClient(settings))
-    assert backend.name == "tf_json"
+    assert backend.name in {"tf_json", "jev"}
