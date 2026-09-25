@@ -94,7 +94,7 @@ def gate_v1(answers: dict[str, Any] | None, facts: dict[str, Any]) -> Result:
 
     bucket = choice(answers, "policy_bucket")
     fake = score_label(answers, "counterfeit_risk")
-    inj = noul(answers, "injection_or_jailbreak", missing=0.0)   # unknown inject->0, needs_human catches
+    inj = noul(answers, "injection_or_jailbreak", missing=1.0)   # fail-closed: missing injection question -> 1.0 (skip)
     needs = noul(answers, "needs_human", missing=1.0)
     p2g = noul(answers, "price_too_good", missing=1.0)
 

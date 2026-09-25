@@ -27,8 +27,8 @@ Context docs (already written): `../01-expert-panel-review.md`, `../02-listguard
 
 | Milestone | Name | Status | Gate |
 |---|---|---|---|
-| **M0** | Walking skeleton — one listing, one decision, one action, one report | not started | gate v0 (3 rules) |
-| **M1** | Core loop closes unattended (overnight-capable) | not started | gate v0 |
+| **M0** | Walking skeleton — one listing, one decision, one action, one report | ✅ green (selftest pass) | gate v0 (3 rules) |
+| **M1** | Core loop closes unattended (overnight-capable) | in progress | gate v0 |
 | **M2** | Gate v1 — closed sets, injection intercept, receipts | vetoed until M1 done | gate v1 |
 | **M3** | Proof — gold eval, learning ledger, hero run | not started | gate v1 |
 | **M4** | Stretch — TF economics, pHash cache, exhibit pack | not started | gate v1 |

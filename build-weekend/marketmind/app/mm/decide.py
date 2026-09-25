@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "skin"))
 import policy as skin  # the oracle — n8n node must mirror skin/policy.py (Art II.4)
 
-from . import config
+from . import config, rerank
 
 ADVANCE_FEE_RE = re.compile(
     r"(iban|nl\d{2}[A-Z]{4}\d{4,}|tikkie|paypal\.me|pay (in advance|to reserve)|transfer €?\d+)", re.I)

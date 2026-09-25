@@ -52,6 +52,15 @@ def main() -> int:
     dr = act.draft_offer({"title": "Switch", "price_eur": 140.0}, {}, used_tonight=0)
     if not dr or dr["offer_ratio"] > 0.80:
         fails.append(f"H1 band violated: {dr}")
+    # 8. confirm emits pursued_assisted (F1-3 / Mandate 2) and outcome writes H1 ledger (F1-4)
+    with tempfile.TemporaryDirectory() as td3:
+        sk.run("sim", "v0", only="quiet", out_dir=td3)
+        c = sk.confirm("mm-live-switch-01", out_dir=td3)
+        if c["action_state"] != "pursued_assisted" or c["actor"] != "human":
+            fails.append("T13 confirm: not pursued_assisted")
+        h = sk.record_outcome("offer-01", "accepted", out_dir=td3)
+        if h["offers"] != 1 or h["accepted"] != 1:
+            fails.append(f"T20 record_outcome: {h}")
     for f in fails:
         print("FAIL:", f)
     print("M1+M2-STAGE TESTS:", "PASS" if not fails else "FAIL")

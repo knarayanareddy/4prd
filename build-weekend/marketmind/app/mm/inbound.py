@@ -2,13 +2,12 @@
 Buyer messages are attacker-controlled: hostile-text screen first (Art VI)."""
 from __future__ import annotations
 from .decide import skin  # oracle phrases (INJECTION_PHRASES) — single source
-
-DISPUTE_WORDS = ("broken", "kapot", "refund", "beschadigd", "defect", "return", "restitution",
-                 "terugbetaling", "doesnt work", "doesn't work", "werkt niet", "ik wil mijn geld")
-AVAIL_WORDS = ("nog beschikbaar", "beschikbaar?", "still available", "available?", "is het nog")
+from . import jev
 
 
-def classify(text: str) -> dict:
+def classify(text: str, backend: str = "jev") -> dict:
+    if backend == "jev":
+        return jev.classify_inbound(text)
     t = (text or "").lower()
     if any(p in t for p in skin.INJECTION_PHRASES):
         return {"outcome": "skipped", "reasons": ["injection_or_jailbreak"], "tier": "T3", "reply": None,

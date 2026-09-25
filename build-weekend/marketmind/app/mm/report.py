@@ -8,7 +8,9 @@ FOOTER = ("Limited-risk decision support for a reseller's own actions. We judge 
 
 def render(run_id: str, rows: list[dict], drafts: list[dict], timing: str,
            deduped: int = 0, paused: bool = False, learned: str = "unmeasured",
-           outreach_used: int | None = None, error: str = "") -> str:
+           outreach_used: int | None = None, error: str = "",
+           cost_line: str = "", watchlist_info: str = "",
+           triage_file: str = "") -> str:
     n = lambda s: sum(1 for r in rows if r["action_state"] == s)          # noqa: E731
     scanned = len(rows)
     refused = [r for r in rows if r["action_state"] in ("skipped", "escalated")][:3]
@@ -23,8 +25,12 @@ def render(run_id: str, rows: list[dict], drafts: list[dict], timing: str,
         f"scanned {scanned} · skipped {n('skipped')} · escalated {n('escalated')} · "
         f"acted {n('pursued_auto') + n('drafted')} (auto {n('pursued_auto')} / drafted {n('drafted')} awaiting you)",
         f"deduped {deduped} seen · kill-switch: {'ON (observe-only)' if paused else 'off'} · learned: {learned}",
-        "refused first:" if refused else "refused first: (none this run)",
     ]
+    if cost_line:
+        lines.append(cost_line)
+    if watchlist_info:
+        lines.append(watchlist_info)
+    lines.append("refused first:" if refused else "refused first: (none this run)")
     for r in refused:
         word = "SKIP" if r["action_state"] == "skipped" else "ESC "
         lines.append(f"  {word} {r['listing_id']:22} {','.join(r['reason_codes'])}")
@@ -35,6 +41,9 @@ def render(run_id: str, rows: list[dict], drafts: list[dict], timing: str,
                      f"({d['offer_ratio']*100:.0f}% of ask, round {d['counter_round']+1}/{d['max_counter_rounds']+1})")
     if scanned == 0:
         lines.append("empty feed — check APIFY_ACTOR_LISTINGS / quota (WIRING §1)")
+    if n("escalated") > 0:
+        tf = triage_file or "out/triage.html"
+        lines.append(f"triage grid: {tf} ({n('escalated')} cards)")
     lines += [
         f"cold-outreach cap: {used}/{config.MAX_COLD_OUTREACH} used tonight",
         f"first-touch p50: {timing} · money moved: €0",

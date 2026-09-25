@@ -15,7 +15,7 @@ function gateV1(answers, facts) {
   if (!answers) return { action: "escalate", reason_codes: ["judge_unconfigured"], human_required: true };
   const bucket = choice(answers, "policy_bucket");
   const fake = scoreLabel(answers, "counterfeit_risk");
-  const inj = noul(answers, "injection_or_jailbreak", 0.0);
+  const inj = noul(answers, "injection_or_jailbreak", 1.0);
   const needs = noul(answers, "needs_human", 1.0);
   const p2g = noul(answers, "price_too_good", 1.0);
   const mz = (facts.margin_z === undefined) ? null : facts.margin_z;

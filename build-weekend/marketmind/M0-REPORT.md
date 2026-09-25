@@ -53,12 +53,12 @@ Receipts: 7 rows, each with UUID + SHA-256 input hash + `policy_branch: gate_v0:
 ## 5. What M0 deliberately did NOT build (warden log)
 No buckets/judge model (M2) · no receipts-in-Airtable (rows + hash suffice, Art VII.1) · no JEV/TF/MLX (unwired tech stays unnamed) · no Browser-Use (draft-assist is the M0 action path) · no seen-ids/digest aggregation polish (M1 T09/T14). The gate stayed at three rules. **Total build time: one sitting.**
 
-## 6. Punch list before the hero overnight (Sat 27 Sep 22:00 — dates pinned in `plan.md`)
+## 6. Punch list before the hero overnight (Sat 26 Sep 22:00 — dates pinned in `plan.md`)
 1. Human: sign `consent.txt` → set `NAMED_RESELLER` · create demo + 2 counterparty accounts · post 5 listings · freeze preregistration. (`WIRING.md` §0)
 2. Keys: Apify token + listing actor id (WIRING §1) → run `--mode live --only scan --measure` and **write the measured cycle time into the digest** (T05).
 3. Telegram bot (WIRING §3) → `--only report` smoke.
 4. Import `wf-m0-scan-decide.json`, wire credentials, flip schedule (~5 min cadence) (WIRING §2).
 5. Re-run the three tests (gold eval, selftest, parity) after any edit — `checklists.md` §2 milestone gates.
-6. 22:00: arm overnight run #1 per `checklists.md` §3. **Friday midnight is the hard gate** (`plan.md` §6): no run #1 logged ⇒ Sunday has no proof.
+6. 22:00 Sat 26 Sep: arm hero overnight run #2 per `checklists.md` §3. **Friday 25 Sep midnight is the hard gate for Run #1** (`plan.md` §6, `04-judge` mandate 2): no run #1 logged ⇒ Sunday has no proof.
 
 Then M1: T09–T15 (seen-ids, comps pipeline live, trust tier + `/pause`, ListingPilot minimal, digest v1).

@@ -40,12 +40,36 @@ class State:
     def paused(self) -> bool:
         return bool(self.data["paused"])
 
-    def record_h1(self, accepted: bool) -> None:
+    def record_h1(self, accepted: bool, offer_id: str | None = None) -> None:
         self.data["priors"]["H1"]["offers"] += 1
         self.data["priors"]["H1"]["accepted"] += int(accepted)
+        if "outcomes" not in self.data["priors"]["H1"]:
+            self.data["priors"]["H1"]["outcomes"] = []
+        if offer_id:
+            self.data["priors"]["H1"]["outcomes"].append({
+                "offer_id": offer_id,
+                "accepted": bool(accepted),
+                "recorded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            })
 
     def h1(self) -> dict:
         return self.data["priors"]["H1"]
+
+    def add_seed(self, seed: dict) -> None:
+        if "seed_buffer" not in self.data:
+            self.data["seed_buffer"] = []
+        self.data["seed_buffer"].append(seed)
+        self.data["seed_buffer"] = self.data["seed_buffer"][-50:]
+
+    def seed_buffer(self) -> list[dict]:
+        return self.data.get("seed_buffer", [])
+
+    def clear_seeds(self) -> None:
+        self.data["seed_buffer"] = []
+
+    @property
+    def _data(self) -> dict:
+        return self.data
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)

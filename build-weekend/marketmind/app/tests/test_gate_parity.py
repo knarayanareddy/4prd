@@ -32,6 +32,10 @@ V1_CASES = [
      {"margin_z": 3.5, "duplicate_photo": 0.0, "offplatform_payment_request": False}),
     (None, {"margin_z": 1.0, "duplicate_photo": 0.0, "offplatform_payment_request": False}),
     ({"invented_label_test": "banana"}, {"margin_z": None, "duplicate_photo": 0.0, "offplatform_payment_request": False}),
+    # F1-1 probe: omitted injection key must fail-closed to skip (missing=1.0)
+    ({"policy_bucket": "ok", "counterfeit_risk": "clear_authentic", "photo_matches_text": 0.9,
+      "price_too_good": 0.1, "needs_human": 0.1},
+     {"margin_z": 2.0, "duplicate_photo": 0.0, "offplatform_payment_request": False}),
 ]
 
 def run_node(js: str) -> list[dict]:

@@ -1,4 +1,4 @@
-# MarketMind — Build Weekend (Prosus) · 27–28 Sep 2026
+# MarketMind — Build Weekend (Prosus) · 25–27 Sep 2026
 
 > An autonomous classifieds buy+sell operator: it **notices** new listings and your stale ones, **decides** with real comps behind a fail-closed gate, **acts** within an earned trust ladder — and knows when to **refuse**. "We judge listings, not people."
 
@@ -21,10 +21,10 @@ python3 marketmind/app/tests/test_gate_parity.py                      # python o
 | `marketmind/kickoff/` | consent, preregistration (H1/H2), listing plan |
 | `01…04-*.md` | the four review sittings (expert panel → ListGuard integration → tech stack → judge pre-mortem) |
 
-## On the day (kickoff Sat 27 Sep)
+## On the day (kickoff Sat 26 Sep)
 1. Walk in with the tested loop + `wf-m0-scan-decide.json` (import to n8n) — wire live keys per `marketmind/WIRING.md`.
-2. **Hero overnight: Sat 22:00 → Sun** — the "while you weren't watching" proof. `checklists.md` §3.
-3. Video Sun 15:00 — 5 beats: **log → refusal → action → assisted → close** (`spec.md` §4). Q&A trump card: run the gold eval live.
+2. **Hero overnight: Sat 26 Sep 22:00 → Sun** — the "while you weren't watching" proof. `checklists.md` §3 (Run #2).
+3. Video Sun 27 Sep 15:00 — 5 beats: **log → refusal → action → assisted → close** (`spec.md` §4). Q&A trump card: run the gold eval live.
 
 ## Your turn (code can't do these)
-**→ `HUMAN-PLAYBOOK.md` is the step-by-step runbook (Thu 24 → Sun 28: accounts · consent · listings · credits · live smoke · hero overnight · film · submit)** — every step timed, with done-criteria and fallbacks.
+**→ `HUMAN-PLAYBOOK.md` is the step-by-step runbook (Thu 24 → Sun 27 Sep: accounts · consent · listings · credits · live smoke · hero overnight · film · submit)** — every step timed, with done-criteria and fallbacks.

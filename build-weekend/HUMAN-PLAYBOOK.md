@@ -1,11 +1,11 @@
-# HUMAN-PLAYBOOK — everything code can't do (Thu 24 → Sun 28 Sep 2026)
+# HUMAN-PLAYBOOK — everything code can't do (Thu 24 → Sun 27 Sep 2026)
 
 > The code is built, tested, and committed. **This file is the only work left: accounts, listings, credits, keys, and four time-boxed moments.** Tick as you go. Every step has: ⏱ estimate · ✅ done-when · 🆘 fallback.
 > Authority order if anything conflicts: `constitution.md` > `plan.md` §6 stop-the-lines > this playbook.
 
 ---
 
-## PHASE 0 — Thursday 25 Sep (or Fri morning) — 45 min total
+## PHASE 0 — Thursday 24 Sep (or Fri morning) — 45 min total
 *Why today: fresh marketplace accounts need 48h of light activity before an agent touches them; consent and freezes are one-time events that must not be rushed on Saturday.*
 
 ### 0.1 Create + warm the 3 marketplace accounts — ⏱ 15 min today, 2 min/day after
@@ -22,7 +22,7 @@ Go to **https://www.marktplaats.nl** → *Registreren* (email + username + passw
 - 🆘 Phone verification blocks account #2/#3 → use one friend account + one of yours; only account A strictly must be new. Never buy accounts.
 
 ### 0.2 Sign the consent — ⏱ 10 min
-`marketmind/kickoff/consent.txt` → print+sign+photo, **or** simpler: have the named reseller email you one line — *"I consent to being the named reseller user of MarketMind at Build Weekend 27–28 Sep."* Save the thread (Art III accepts **written** consent). Fill their name/role + account-A handle on the consent form.
+`marketmind/kickoff/consent.txt` → print+sign+photo, **or** simpler: have the named reseller email you one line — *"I consent to being the named reseller user of MarketMind at Build Weekend 25–27 Sep 2026."* Save the thread (Art III accepts **written** consent). Fill their name/role + account-A handle on the consent form.
 - ✅ **Done when:** signed form or consent email saved in `evidence/consent/`.
 - 🆘 Nobody available → run `NAMED_RESELLER=unset` (Art III.3 — the UI shows "for named reseller unset"). **Never invent a person** (judge kiss-of-death list).
 
@@ -46,7 +46,7 @@ python3 marketmind/app/tests/test_gate_parity.py    # needs node >= 18
 
 ---
 
-## PHASE 1 — Friday 26 Sep — ~2.5 h spread over the day
+## PHASE 1 — Friday 25 Sep — ~2.5 h spread over the day (D0: Rehearsal & Live Smoke)
 
 ### 1.1 Post the 5 listings — ⏱ 30 min (do this BEFORE buying credits)
 Follow `marketmind/kickoff/LISTING-PLAN.md` exactly: Switch V2 **€150** · PS4 Slim **€120** · Canon EF-S 18-55 **€60** · game lot ×3 **€55** · Sony point-and-shoot **€45**. Real photos, honest condition text, correct category rubriek (*Games & Consoles* / *Fotografie*). For each: copy the **live URL** and listing id into a note (the own-listings actor + receipts evidence need them).
@@ -85,7 +85,7 @@ Run in this order; stop and fix at the first failure (fallback ladder = `plan.md
 
 ---
 
-## PHASE 2 — Saturday 27 Sep — event day (D1)
+## PHASE 2 — Saturday 26 Sep — event day (D1)
 
 ### 2.1 Pack & kickoff — ⏱ 30 min before leaving
 Bag: laptop + charger · phone + cable · `app/.env` contents in your password manager (**not** in git) · the 5 listing URLs · this playbook · headphones (VO recording later). At kickoff: tell mentors **"the loop is tested — here are the receipts"** and take feedback as *config/parameter changes*, never a rebuild (the warden is watching). If organizers issue **their** Apify/n8n credits → swap the `.env` values and re-run the Fri smoke table (rows 1–4, 10 min).
@@ -101,7 +101,7 @@ Bag: laptop + charger · phone + cable · `app/.env` contents in your password m
 
 Stop-the-line check at **13:00** and **18:00** (`plan.md` §6): if P0 isn't green at 13:00, freeze feature work and spend the afternoon on rehearsal + evidence prep. Gate v1 stays **flagged** (v0 default) — flip is allowed only after tonight's run proves the loop.
 
-### 2.3 22:00 — ⭐ THE HERO OVERNIGHT (the single most important hour of the weekend)
+### 2.3 22:00 — ⭐ THE HERO OVERNIGHT (the single most important hour of the weekend: Run #2)
 This run *is* the 25% "proven in real use" score and the "while you weren't watching" bonus. `checklists.md` §3, armed in this order:
 
 1. **Config freeze** — commit or note "frozen 22:00". No edits during the run (bugs included — log them instead).
@@ -115,7 +115,7 @@ This run *is* the 25% "proven in real use" score and the "while you weren't watc
 
 ---
 
-## PHASE 3 — Sunday 28 Sep — harvest → film → 15:00 (D2)
+## PHASE 3 — Sunday 27 Sep — harvest → film → 15:00 (D2)
 
 ### 3.1 Morning harvest — 08:00–10:00
 1. Assemble `evidence/hero-run/`: digest (forward to Saved Messages) · `receipts.jsonl` · n8n execution screenshots (timestamps!) · Apify runs screenshot (cycle times!) · Telegram thread · drafts folder.

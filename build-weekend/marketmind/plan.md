@@ -1,7 +1,7 @@
 # MarketMind — plan
 How we build the spec. **Article I governs ordering: loop first, gate second.**
 
-> **CALENDAR (pinned 24 Sep 2026):** kickoff **Sat 27 Sep** · video submission **Sun 28 Sep 15:00** · live final 16:15. Day labels: **D0 = Fri 26** · **D1 = Sat 27** · **D2 = Sun 28**. Prep is allowed (rules: loose). **One hero overnight exists: Sat 27 22:00 → Sun morning** — it is run #1 *and* the "while you weren't watching" proof. Prep plan: accounts + consent + H1/H2 freeze **Thu 24** (warm accounts Thu–Fri) · 5 listings + keys **Fri 26** · **live smoke Fri evening** (one scan, one decision, one draft, one digest; label it dress rehearsal) · walk in Saturday with the loop already tested and adapt live on the day.
+> **CALENDAR (pinned 25 Sep 2026):** kickoff **Sat 26 Sep** · video submission **Sun 27 Sep 15:00** · live final 16:15. Day labels: **D0 = Fri 25 Sep** · **D1 = Sat 26 Sep** · **D2 = Sun 27 Sep**. Prep is allowed (rules: loose). **Hard gate: Run #1 by Friday 25 Sep 24:00 (midnight)** (rehearsal / live smoke). **One hero overnight exists: Sat 26 Sep 22:00 → Sun morning (Run #2)** — it is the "while you weren't watching" proof. Prep plan: accounts + consent + H1/H2 freeze **Thu 24 Sep** (warm accounts Thu–Fri) · 5 listings + keys **Fri 25 Sep** · **live smoke Fri evening** (one scan, one decision, one draft, one digest; label it dress rehearsal) · walk in Saturday with the loop already tested and adapt live on the day.
 
 ---
 
@@ -33,8 +33,39 @@ Model knobs (Art II.3): observe ≠ judge; TF preferred, OpenAI-compatible legal
 | Act | Browser-Use cloud (session recordings = demo footage); draft-assist fallback | semi-irreversible, allowlisted (Art XII.1) |
 | Memory | Airtable: `listings · decisions · receipts · priors · overrides` | receipts + learning in one place |
 | Human | Telegram bot: digest, approve, `/pause` `/resume` | one channel, one kill switch |
-| Policy oracle + evals | Python 3.11, stdlib-only `skin/policy.py`, `skin/gold.jsonl` | tests green offline; n8n node mirrors it |
-| Cache (P2) | **JEV verdict cache**: pHash/embedding → prior verdict (`unmeasured` until wired) | JEV (Jevons layer, 4prd lineage): re-posts cost 0 tokens; `DECISION_BACKEND` routing knob is core (M1) |
+| Cache & Routing (P2) | **JEV System 1 Gateway**: typesafe.ai / OpenRouter (`n8n-nodes-jev`) | High-speed, calibrated classification; immune to prompt injection; 2-stage comp reranking; `DECISION_BACKEND=jev` knob |
+
+### 2.1. Jev System 1 Gateway Spec (Deterministic Defense & Fast Triage)
+
+MarketMind implements a strict **System 1 (Classifier) vs. System 2 (Generative LLM)** division of labor:
+
+```
+[Inbound Listing / Message]
+              │
+              ▼
+   ┌───────────────────────┐
+   │     JEV SYSTEM 1      │ ◄── [typesafe.ai / OpenRouter via n8n-nodes-jev]
+   │  Classification Node  │     • Sub-100ms latency, sub-cent pricing
+   └──────────┬────────────┘     • Calibrated confidence over closed sets
+              │                  • INHERENT IMMUNITY to prompt injections & jailbreaks
+              │
+    ┌─────────┴───────────────────────┐
+    │ Categorized Verdict             │
+    ▼                                 ▼
+[Safe / Pursue Candidate]     [Hostile / Scam / Dispute]
+    │                                 │
+    ▼                                 ▼
+┌───────────────────────┐     ┌───────────────────────┐
+│     SYSTEM 2 (LLM)    │     │      POLICY GATE      │
+│  Personalized Dutch   │     │  Skip / Escalate to   │
+│  Negotiation Drafter  │     │  human immediately   │
+└───────────────────────┘     └───────────────────────┘
+```
+
+**Key Pillars of the Jev Gateway:**
+1. **Adversarial & Jailbreak Immunity (Art VI):** Traditional generative models can be coerced into ignoring instructions via prompt injection. Jev performs discrete, discriminative classification over closed labels (`clean`, `injection_or_jailbreak`, `offplatform_payment`, `counterfeit`), making prompt injection attacks structurally impossible.
+2. **Sub-100ms Inbound Triage:** Buyer inquiries on own listings are classified instantly into `dispute_t3`, `avail`, `offer`, or `injection` without spinning up heavyweight generative LLMs.
+3. **2-Stage Grounded Comps Re-Ranking:** Scraped Apify sold comps are re-ranked based on semantic match to filter out cheap accessories/cases (< 0.85 confidence) before computing `margin_z`.
 
 ## 3. Files this package adds (and who consumes them)
 
@@ -42,7 +73,7 @@ Model knobs (Art II.3): observe ≠ judge; TF preferred, OpenAI-compatible legal
 marketmind/            # this spec package (source of truth)
 skin/                  # buckets.json · questions.json · policy.py · gold.jsonl
 ```
-Runtime equivalents live in n8n (policy node, workflows) and Airtable (receipts). The Python is the **oracle** the n8n node must match (Art II.4) — tested against `gold.jsonl` in CI-style `python skin/policy.py --eval skin/gold.jsonl`.
+Runtime equivalents live in n8n (workflows: `wf-m0` portable cron, `wf-m1` full v1, `wf-m2-event-driven` enterprise webhook via `@apify/n8n-nodes-apify`) and Airtable (receipts). The Python is the **oracle** the n8n node must match (Art II.4) — tested against `gold.jsonl` in CI-style `python skin/policy.py --eval skin/gold.jsonl`.
 
 ## 4. Trust tier config (single JSON in n8n credentials/env)
 
@@ -61,19 +92,18 @@ Runtime equivalents live in n8n (policy node, workflows) and Airtable (receipts)
 
 | if this fails by | cut (do not improvise) |
 |---|---|
+| **D0 24:00 — run #1 not logged (Friday midnight judge hard gate)** | **D2 has no proof.** Film only what receipts exist; degrade per ladder; never fake (Art VIII.3). FlipScout-only story if ListingPilot never ran |
+| **D0 24:00 — human punch list incomplete** | consent→`unset` mode (Art III.3); own-listings demo dropped; FlipScout-only story |
 | D1 midday — keys/actors fail (Apify/n8n/Telegram) | sim-replay rig is the filming source (labelled REPLAY, Art VIII.3); draft-assist only |
-| **D1 24:00 — run #1 not logged (judge hard gate)** | **D3 has no proof.** Film only what receipts exist; degrade per ladder; never fake (Art VIII.3). FlipScout-only story if ListingPilot never ran |
+| D1 22:00 — hero overnight run #2 armed | arm per `checklists.md` §3; if keys fail, sim-loop overnight |
 | D2 midday — loop doesn't close unattended | **freeze gate at v0** (3 rules); all remaining time = loop + digest + video |
-| D2 18:00 — gate v1 not green | ship v0 gate; injection fixture becomes a "spec'd next" slide — **never fake it** |
-| D3 10:00 anything | freeze; video cuts from real past runs only (Art VIII.3) |
+| D2 10:00 — anything | freeze; video cuts from real past runs only (Art VIII.3) |
 | Browser-Use blocked | draft-assist (draft + human Send); navigation recording still demoed |
 | Apify actor flaky | cadence to 15 min + cache; stale grounding ⇒ observe-only |
 | MODEL_JUDGE 429 / schema unsupported | text-only judge + pydantic-style repair in policy node; else `judge=unconfigured` → escalate all |
 | TF keys dead | OpenAI-compatible base URL, same schemas (Art II.3) |
 | Receipts not wired | plain Airtable rows (hash later) — never no log (Art VII.1) |
 | Gold eval not run | show overnight receipt counts instead of the 3-column table (Art IV allows `unmeasured`) |
-| D3 10:00 anything | freeze; video cuts from real past runs only (Art VIII.3) |
-| **D0 24:00 — human punch list incomplete** | consent→`unset` mode (Art III.3); own-listings demo dropped; FlipScout-only story |
 
 ## 7. Proprietary comparator (eval column a)
 

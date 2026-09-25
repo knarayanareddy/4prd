@@ -35,7 +35,7 @@
 
 | # | Finding | Rubric | Evidence | Fix |
 |---|---|---|---|---|
-| C4 | **Tokens in URLs + unredacted errors:** Apify token sent as `?token=` query (lands in tracebacks/proxies); `send_live` let Telegram's token-bearing URL escape in exceptions | OWASP A02/A09 "no secrets in URLs/logs" | old `notice.py`, `report.py` | ✅ Apify `Authorization: Bearer`; Telegram wrapped `RuntimeError(type name only)` |
+| C4 | **Tokens in URLs + unredacted errors:** Apify token sent as `?token=` query (lands in tracebacks/proxies); `send_live` let Telegram's token-bearing URL escape in exceptions | OWASP A02/A09 "no secrets in URLs/logs" | old `notice.py`, `report.py`, n8n workflow URLs | ✅ Apify `Authorization: Bearer` (Python + n8n workflows); Telegram wrapped `RuntimeError(type name only)` |
 | C5 | **Evidence destroyed per run:** `receipts.write` opened `"w"` — the overnight log (the 25% proof) would be overwritten by the next run; hash was input-only, not tamper-evident | OWASP A08/A09, ASI08 | old `receipts.py` | ✅ append-only + `prev_hash→row_hash` chain + `verify_chain()` (selftest + judge Q&A trump-card add-on) |
 | C6 | **Unwired safety control:** `AUTO_PAUSE=1` documented in `env.example` as kill switch but read nowhere — trusting it was a false safety net | ASI10 Rogue Agents (kill switch must exist and work) | env.example vs config/runner | ✅ env checked at run start → observe-only; selftest proves it |
 | C7 | **Failure = no log:** live-mode feed errors crashed with a raw traceback (possible URL/token leak) and produced no digest — Art VII.1 forbids "no log" | OWASP A10 fail-closed; ASI08 | old runner | ✅ `MMFeedError` (clean message), honest `SCAN FAILED` digest, exit 2 |
