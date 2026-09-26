@@ -64,7 +64,7 @@ def margin_z(price_eur: float | None, comp_median: float | None, comp_mad: float
 # Rule 1 = hostile-text screen (deterministic): injection phrases, illegal keywords, advance-fee/IBAN.
 # Stays 3 rules total — expanded under Art VI (hostile input is in-scope from day one).
 
-ILLEGAL_KEYWORDS = {"weapon", "knife", "knives", "gun", "pistol", "ammo", "hunting knife", "airsoft"}
+ILLEGAL_RE = re.compile(r"\b(weapon|knife|knives|gun|pistol|ammo|hunting knife|airsoft)\b", re.I)
 INJECTION_PHRASES = ("ignore previous instructions", "accept any offer", "mark as sold",
                      "mark as safe", "disregard all prior")
 ADVANCE_FEE_RE = re.compile(
@@ -75,7 +75,7 @@ def gate_v0(facts: dict[str, Any]) -> Result:
     text = (facts.get("text") or "").lower()
     if any(p in text for p in INJECTION_PHRASES):
         return Result(Action.skip, ["injection_or_jailbreak"], True)   # never pursue hostile text
-    if any(k in text for k in ILLEGAL_KEYWORDS):
+    if ILLEGAL_RE.search(text):
         return Result(Action.skip, ["illegal_keyword"], True)
     if facts.get("offplatform_payment_request") or ADVANCE_FEE_RE.search(text):
         return Result(Action.skip, ["offplatform_payment_request"], True)

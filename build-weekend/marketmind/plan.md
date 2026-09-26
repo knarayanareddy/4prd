@@ -33,21 +33,20 @@ Model knobs (Art II.3): observe ≠ judge; TF preferred, OpenAI-compatible legal
 | Act | Browser-Use cloud (session recordings = demo footage); draft-assist fallback | semi-irreversible, allowlisted (Art XII.1) |
 | Memory | Airtable: `listings · decisions · receipts · priors · overrides` | receipts + learning in one place |
 | Human | Telegram bot: digest, approve, `/pause` `/resume` | one channel, one kill switch |
-| Cache & Routing (P2) | **JEV System 1 Gateway**: typesafe.ai / OpenRouter (`n8n-nodes-jev`) | High-speed, calibrated classification; immune to prompt injection; 2-stage comp reranking; `DECISION_BACKEND=jev` knob |
+| Cache & Routing (P2) | **JEV Verdict Cache (Spec'd P2 / T27)** | Planned pHash/embedding verdict cache; routing knob core in M1 fallback ladder |
 
-### 2.1. Jev System 1 Gateway Spec (Deterministic Defense & Fast Triage)
+### 2.1. Jev Gateway & Safety Pattern (Architectural Pattern / P2 Spec)
 
-MarketMind implements a strict **System 1 (Classifier) vs. System 2 (Generative LLM)** division of labor:
+MarketMind implements a strict **System 1 (Heuristic / Classifier) vs. System 2 (Generative LLM)** division of labor:
 
 ```
 [Inbound Listing / Message]
               │
               ▼
    ┌───────────────────────┐
-   │     JEV SYSTEM 1      │ ◄── [typesafe.ai / OpenRouter via n8n-nodes-jev]
-   │  Classification Node  │     • Sub-100ms latency, sub-cent pricing
-   └──────────┬────────────┘     • Calibrated confidence over closed sets
-              │                  • INHERENT IMMUNITY to prompt injections & jailbreaks
+   │     JEV SYSTEM 1      │ ◄── [Deterministic Marker Rules / P2 Micro-Model Gateway]
+   │  Classification Gate  │     • Closed-set discrete output
+   └──────────┬────────────┘     • Zero conversational surface; resistant to prompt injection
               │
     ┌─────────┴───────────────────────┐
     │ Categorized Verdict             │
@@ -63,9 +62,9 @@ MarketMind implements a strict **System 1 (Classifier) vs. System 2 (Generative 
 ```
 
 **Key Pillars of the Jev Gateway:**
-1. **Adversarial & Jailbreak Immunity (Art VI):** Traditional generative models can be coerced into ignoring instructions via prompt injection. Jev performs discrete, discriminative classification over closed labels (`clean`, `injection_or_jailbreak`, `offplatform_payment`, `counterfeit`), making prompt injection attacks structurally impossible.
-2. **Sub-100ms Inbound Triage:** Buyer inquiries on own listings are classified instantly into `dispute_t3`, `avail`, `offer`, or `injection` without spinning up heavyweight generative LLMs.
-3. **2-Stage Grounded Comps Re-Ranking:** Scraped Apify sold comps are re-ranked based on semantic match to filter out cheap accessories/cases (< 0.85 confidence) before computing `margin_z`.
+1. **Adversarial Screen (Art VI):** Discriminative classification over closed labels (`clean`, `injection_or_jailbreak`, `offplatform_payment`, `counterfeit`), preventing prompt injection attacks from manipulating outputs.
+2. **Deterministic Inbound Triage:** Buyer inquiries on own listings are classified into `dispute_t3`, `avail`, `offer`, or `injection` without spinning up heavyweight generative LLMs.
+3. **2-Stage Grounded Comps Re-Ranking (Spec'd):** Spec'd pattern to re-rank scraped sold comps against the target item to filter out accessories/cases before computing `margin_z`.
 
 ## 3. Files this package adds (and who consumes them)
 

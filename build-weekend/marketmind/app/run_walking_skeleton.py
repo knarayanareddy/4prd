@@ -31,7 +31,8 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
     t = time.perf_counter()
     try:
         listings, meta = notice.load(mode, measure=True)
-        run_costs.add_apify(len(listings))
+        if mode == "live":
+            run_costs.add_apify(len(listings))
     except notice.MMFeedError as e:
         digest = report.render(f"m1-{mode}-{gate}", [], [], "n/a", error=str(e),
                                triage_file=str(OUT / "triage.html"))
@@ -42,6 +43,8 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
         (OUT / "run-summary.json").write_text(json.dumps(summary, indent=2))
         if not only:
             print(digest)
+        else:
+            print(f"FEED ERROR ({only}): {e}")
         return summary
     if only == "scan":
         # read-only observation stage: no dedupe, no decisions, no writes (T05 smoke, WIRING §6)
@@ -70,23 +73,32 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
     # WATCHLIST REVISIT — check if previously watchlisted items now have comps (Darko improvement #5)
     pending_wl = watchlist.get_pending(st.data)
     watchlist_resolved = 0
+    revisit_items = []
     for wl_entry in pending_wl:
         wl_item = wl_entry.get("item", {})
-        if not wl_item or st.is_seen(wl_item.get("id")):
+        if not wl_item:
             continue
         wl_facts = decide.facts_for(wl_item, comps)
         if wl_facts.get("margin_z") is not None:
-            listings.append(wl_item)
             watchlist.mark_revisited(st.data, wl_item["id"], resolved=True)
             watchlist_resolved += 1
+            revisit_items.append(wl_item)
         else:
             watchlist.mark_revisited(st.data, wl_item["id"], resolved=False)
 
+    revisit_ids = {it["id"] for it in revisit_items}
+    existing_scan_ids = {it["id"] for it in listings}
+    for r_item in revisit_items:
+        if r_item["id"] not in existing_scan_ids:
+            listings.append(r_item)
+
     rows, drafts, deduped = [], [], 0
     for item in listings:
-        if st.is_seen(item["id"]):
+        is_revisit = item["id"] in revisit_ids
+        if st.is_seen(item["id"]) and not is_revisit:
             deduped += 1
             continue
+        revisit_ids.discard(item["id"])
         st.mark_seen(item["id"])
         r = receipts.begin(item)
 
@@ -97,21 +109,24 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
         item["health"] = h_score
         if h_score < health.HEALTH_FLOOR:
             rows.append(receipts.commit(r, "skip", ["low_health"], "skipped",
-                                        "T0", gate, scores={"health": h_score}))
+                                        "T0", gate, scores={"health": h_score},
+                                        policy_branch="prefilter:health"))
             continue
 
         facts = decide.facts_for(item, comps)
         if gate == "v1":
             if item.get("judge_answers") is None:
                 if judge.available():
-                    run_costs.add_observe()
-                    run_costs.add_judge()
+                    if mode == "live":
+                        run_costs.add_observe()
+                        run_costs.add_judge()
                     item["judge_answers"] = judge.score(facts)
                 else:
                     item["judge_answers"] = None  # None => judge=unconfigured => escalate-all
             else:
-                run_costs.add_observe()
-                run_costs.add_judge()
+                if mode == "live":
+                    run_costs.add_observe()
+                    run_costs.add_judge()
 
         d = decide.decide(item, facts, gate=gate)
         state_name, extra = None, {}
@@ -161,7 +176,7 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
     expansion_queries = expand.build_expansion_queries(st.seed_buffer())
     expansion_sellers = expand.seller_profiles_to_scrape(st.seed_buffer())
     n_pursued = sum(1 for r in rows if r["action_state"] in ("drafted", "pursued_auto"))
-    cost_line = run_costs.summary_line(len(rows), n_pursued)
+    cost_line = run_costs.summary_line(len(rows), n_pursued, mode=mode)
     wl_pending = len(watchlist.get_pending(st.data))
     wl_info = f"watchlist: {wl_pending} pending · {watchlist_resolved} resolved this cycle" if (wl_pending or watchlist_resolved) else ""
 
@@ -189,10 +204,12 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
                "timing_note": "local pipeline wall time — honest label, not a marketplace latency claim (Art IV.3)",
                "apify_cycle_s": meta["cycle_time_s"],
                "costs": {
-                   "total_eur": run_costs.total_eur,
-                   "apify_cost_eur": run_costs.apify_cost_eur,
-                   "llm_cost_eur": run_costs.llm_cost_eur,
-                   "cost_per_pursue": run_costs.cost_per_pursue(n_pursued),
+                   "measured": mode == "live",
+                   "total_eur": run_costs.total_eur if mode == "live" else 0.0,
+                   "apify_cost_eur": run_costs.apify_cost_eur if mode == "live" else 0.0,
+                   "llm_cost_eur": run_costs.llm_cost_eur if mode == "live" else 0.0,
+                   "cost_per_pursue": run_costs.cost_per_pursue(n_pursued) if mode == "live" else 0.0,
+                   "note": "live measured" if mode == "live" else "unmeasured (sim run — live rates: Apify ~€0.002/item, TF ~€0.001/judge)",
                },
                "watchlist": {
                    "pending": wl_pending,
@@ -215,33 +232,49 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
 
 
 def confirm(draft_id: str, out_dir: str | Path | None = None) -> dict:
-    """Human confirms a draft -> emits a pursued_assisted receipt (Mandate 2 / Art VII.2)."""
+    """Human confirms a draft -> emits a pursued_assisted receipt (Mandate 2 / Art VII.2).
+    Requires a prior receipt with action_state == 'drafted'. Rejects forged / un-drafted / paused confirms."""
     OUT = Path(out_dir) if out_dir else APP / "out"
     receipts_path = OUT / "receipts.jsonl"
-    existing = None
-    if receipts_path.exists():
-        for ln in receipts_path.read_text(encoding="utf-8").splitlines():
-            if not ln.strip():
-                continue
-            try:
-                row = json.loads(ln)
-                if row.get("listing_id") == draft_id or row.get("receipt_id") == draft_id:
-                    existing = row
-            except Exception:
-                pass
+    state_path = OUT / "state.json"
+
+    st = state_mod.State(state_path)
+    if st.paused():
+        raise PermissionError(f"Cannot confirm draft {draft_id}: kill switch is active (AUTO_PAUSE or /pause).")
+
+    if not receipts_path.exists():
+        raise FileNotFoundError(f"No receipts found at {receipts_path}. Cannot confirm draft.")
+
+    existing_draft = None
+    for ln in receipts_path.read_text(encoding="utf-8").splitlines():
+        if not ln.strip():
+            continue
+        try:
+            row = json.loads(ln)
+            if (row.get("listing_id") == draft_id or row.get("receipt_id") == draft_id) and row.get("action_state") == "drafted":
+                existing_draft = row
+        except Exception:
+            pass
+
+    if not existing_draft:
+        raise ValueError(
+            f"Cannot confirm {draft_id}: No prior receipt with action_state == 'drafted' found. "
+            f"Art VII.2 forbids confirming skipped, hostile, or non-existent listings."
+        )
+
     row = {
         "receipt_id": str(uuid.uuid4()),
         "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "input_hash": hashlib.sha256(f"confirm:{draft_id}:{time.time()}".encode()).hexdigest()[:16],
-        "listing_id": draft_id,
+        "listing_id": existing_draft.get("listing_id", draft_id),
         "actor": "human",
         "policy_branch": "human:confirm_send",
         "action_state": "pursued_assisted",
-        "tier": existing.get("tier", "T2") if existing else "T2",
+        "tier": existing_draft.get("tier", "T2"),
         "reason_codes": ["human_confirmed"],
-        "scores": existing.get("scores", {}) if existing else {},
+        "scores": existing_draft.get("scores", {}),
         "action_state_note": "assisted = human pressed Send (Art VII.2)",
-        "hostile": False,
+        "hostile": bool(existing_draft.get("hostile", False)),
     }
     receipts.write(receipts_path, [row])
     print(f"CONFIRMED: draft {draft_id} confirmed by human hand -> pursued_assisted")
@@ -320,6 +353,35 @@ def selftest() -> int:
         ok_c, msg_c = receipts.verify_chain(Path(td) / "receipts.jsonl")
         if not ok_c:
             fails.append(f"receipt chain broken after confirm: {msg_c}")
+
+        # N1-1 confirm forgery & safety assertions
+        try:
+            confirm("mm-live-inject-01", out_dir=td)
+            fails.append("confirm allowed confirming hostile skipped listing (forgery bug N1-1)")
+        except ValueError:
+            pass  # Expected: rejected
+
+        try:
+            confirm("totally-made-up-id", out_dir=td)
+            fails.append("confirm allowed confirming non-existent listing")
+        except ValueError:
+            pass  # Expected: rejected
+
+        st_td = state_mod.State(Path(td) / "state.json")
+        st_td.pause()
+        st_td.save()
+        try:
+            confirm("mm-live-switch-01", out_dir=td)
+            fails.append("confirm allowed confirming while kill switch is active")
+        except PermissionError:
+            pass  # Expected: rejected
+        st_td.resume()
+        st_td.save()
+
+        # N1-2 Sim cost honesty assertion (costs: unmeasured in sim mode)
+        if s1["costs"]["measured"] is not False or s1["costs"]["total_eur"] != 0.0:
+            fails.append(f"sim run fabricated non-zero or measured costs: {s1['costs']}")
+
         h1_res = record_outcome("offer-switch-01", "accepted", out_dir=td)
         if h1_res["offers"] != 1 or h1_res["accepted"] != 1:
             fails.append(f"record_outcome failed: {h1_res}")
@@ -387,6 +449,27 @@ def selftest() -> int:
     watchlist.add(test_state, test_wl_item, ["no_comps"])
     if len(watchlist.get_pending(test_state)) != 1:
         fails.append("watchlist add/get failed")
+
+    # Watchlist end-to-end integration (N1-4): run1 escalates to watchlist; comps arrive in run2 -> resolved
+    with tempfile.TemporaryDirectory() as td_wl:
+        s_wl1 = run("sim", "v0", only="quiet", out_dir=td_wl)
+        if s_wl1["watchlist"]["pending"] == 0:
+            fails.append("watchlist has 0 pending after sim run 1")
+        # In run 2, new comps arrive for the tin toy
+        tmp_comps = Path(td_wl) / "new_comps.json"
+        tmp_comps.write_text(json.dumps({
+            "tin toy": {"median": 60, "mad": 5, "n": 10, "source": "test comps"},
+            "nintendo switch v2": {"median": 180, "mad": 20, "n": 36, "source": "test"},
+            "switch pro controller": {"median": 50, "mad": 5, "n": 22, "source": "test"},
+            "iphone 14": {"median": 520, "mad": 50, "n": 40, "source": "test"},
+            "gazelle e-bike": {"median": 800, "mad": 60, "n": 15, "source": "test"},
+            "canon ae": {"median": 240, "mad": 30, "n": 9, "source": "test"}
+        }))
+        os.environ["COMPS_PATH"] = str(tmp_comps)
+        s_wl2 = run("sim", "v0", only="quiet", out_dir=td_wl)
+        os.environ.pop("COMPS_PATH", None)
+        if s_wl2["watchlist"]["resolved_this_cycle"] < 1:
+            fails.append(f"watchlist item failed to resolve in cycle 2 after comps arrived: {s_wl2['watchlist']}")
 
     # Darko improvement #6: Personalization
     old_item = {"title": "Switch", "description": "with box and charger",

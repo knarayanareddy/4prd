@@ -23,7 +23,8 @@ def load(mode: str, measure: bool = False) -> tuple[list[dict], dict]:
     t0 = time.perf_counter()
     if mode == "sim":
         listings = json.loads((FIXTURES / "apify_sample_dataset.json").read_text())
-        comps = json.loads((FIXTURES / "comps_sample.json").read_text())
+        comps_path = Path(os.environ.get("COMPS_PATH", FIXTURES / "comps_sample.json"))
+        comps = json.loads(comps_path.read_text())
         meta = {"source": "fixtures", "mode": "sim",
                 "timing_note": "simulated local read; live cycle time measured at T15/T05"}
     else:

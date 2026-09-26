@@ -35,6 +35,33 @@ Context docs (already written): `../01-expert-panel-review.md`, `../02-listguard
 
 **"Done-done" means:** acceptance criteria in `tasks.md` pass, a test is green, and a receipt or log line exists. Not "demoable in a video."
 
+## Quickstart & Proof Commands
+
+**Prerequisites:** Python >= 3.10, Node.js >= 18 (required for JS policy node parity validation).
+
+```bash
+# 1. Run local walking skeleton (sim mode, deterministic)
+python3 app/run_walking_skeleton.py
+
+# 2. Run full 7-step self-test verification battery
+python3 app/run_walking_skeleton.py --selftest
+
+# 3. Human confirm a drafted offer -> emit pursued_assisted signed receipt (Art VII.2)
+python3 app/run_walking_skeleton.py --confirm mm-live-switch-01
+
+# 4. Record offer outcome into H1 learning ledger (T20/US-8)
+python3 app/run_walking_skeleton.py --outcome offer-switch-01 accepted
+
+# 5. Export triage table to CSV for Google Sheets
+python3 app/run_walking_skeleton.py --export-csv
+
+# 6. Verify 33-point gate parity across Python oracle, JS mirrors, and 3 inline workflows
+python3 app/tests/test_gate_parity.py
+
+# 7. Evaluate gold set (hostile->pursue = 0 build-breaking metric)
+python3 skin/policy.py --eval skin/gold.jsonl
+```
+
 ---
 
 ## Article X reminder

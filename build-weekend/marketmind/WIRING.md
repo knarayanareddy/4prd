@@ -50,14 +50,14 @@ The pipeline is done and self-tested in **sim** mode (`app/run_walking_skeleton.
 1. Import `app/n8n/wf-m0-scan-decide.json` (n8n → Workflows → Import).
 2. Credentials: HTTP Bearer = Apify token; Telegram node = bot token; Airtable = PAT (§4).
 3. The POLICY Code node runs `app/n8n/policy_v0_node.js` (inline in the workflow). **Oracle parity rule (Art II.4):** node code must match `skin/policy.py::gate_v0` — run `python3 app/run_walking_skeleton.py --selftest` after any edit to either.
-4. **Jev System 1 Decision & Safety Gateway (`DECISION_BACKEND=jev`):**
-   - **Provider:** `typesafe.ai` API or OpenRouter (`openrouter.ai`).
-   - **n8n Community Node:** `n8n-nodes-jev` (or standard `httpRequest` node to OpenRouter Jev endpoint).
+4. **Jev System 1 Decision & Safety Gateway Pattern (Spec'd P2 / Heuristic in M1):**
+   - **M1 Runtime Implementation:** Deterministic pattern heuristics (`mm/jev.py` & `mm/inbound.py`) running locally without external network overhead or prompt injection leakage.
+   - **P2 Spec Target:** Micro-model endpoint via OpenRouter / typesafe.ai or dedicated community node.
    - **Responsibilities:**
-     - *Inbound Buyer Triage (`inbound.py`):* Sub-50ms routing into `dispute_t3`, `avail`, `offer`, `injection`.
-     - *Hostile Screen (Art VI):* Mathematical prompt injection defense outputting discrete probabilities over closed buckets (`clean`, `injection_or_jailbreak`, `offplatform_payment`, `counterfeit`).
-     - *2-Stage Comps Re-Ranking:* Filters noisy Apify sold comps (accessories, boxes, broken parts) with $<0.85$ confidence before $\sigma$ calculation.
-   - **Parity Rule (Art II.4):** Jev's output labels must match the closed-set keys in `skin/buckets.json`.
+     - *Inbound Buyer Triage (`inbound.py`):* Deterministic routing into `dispute_t3`, `avail`, `offer`, `injection`.
+     - *Hostile Screen (Art VI):* Closed-set safety screening over discrete buckets (`clean`, `injection_or_jailbreak`, `offplatform_payment`, `counterfeit`).
+     - *2-Stage Comps Re-Ranking (Spec'd):* Re-ranks scraped sold comps to filter out noisy accessories and parts before computing `margin_z`.
+   - **Parity Rule (Art II.4):** Gateway labels match the closed-set keys in `skin/buckets.json`.
 
 ## 3) Telegram (T08 — report + approvals)
 1. BotFather → `/newbot` → `TELEGRAM_BOT_TOKEN`. Message the bot once. Get `TELEGRAM_CHAT_ID` via `https://api.telegram.org/bot<TOKEN>/getUpdates`.
@@ -95,7 +95,7 @@ MarketMind ships with two distinct workflow topologies:
   `Settings` → `Community Nodes` → `Install` → package: `@apify/n8n-nodes-apify`.
 - **Trigger:** Webhook event via `Apify Trigger` (`ACTOR.RUN.SUCCEEDED`).
 - **Latency Advantage:** Sub-second deal reaction. Eliminates the 5-minute polling window: as soon as the Apify crawler writes its dataset, n8n wakes up instantaneously.
-- **Cloud Comps Grounding:** Supports retrieving shared market comps and watchlist state from Apify Key-Value Stores (`marketmind-comps`), decoupling grounding from local disk.
+- **Market Grounding:** Direct grounding against sold comps datasets, preventing hallucinations and ensuring closed-set valuation bounds.
 - **Darko Integration:** Direct pipeline integration with the Deterministic Health Pre-Filter (`HEALTH_FLOOR = 25`), routing low-health items to skip receipts with zero LLM spend.
 
 ### Topology C: Async Polling Fallback (Mohammed Belfellah Pattern)

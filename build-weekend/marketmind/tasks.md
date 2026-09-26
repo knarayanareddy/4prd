@@ -25,7 +25,7 @@ Goal: the product works **unattended**. Overnight-capable.
 - [ ] **T12** ListingPilot minimal: stale-rule (no views N days) → reprice/bump own listing; inbound reply with dispute-words → T3 escalate.
 - [ ] **T13** Browser-Use act path + **one witnessed draft-assist fallback** (the ladder is real, not slides).
 - [ ] **T14** Digest v1: scanned · skipped · escalated · acted (by `action_state`) · learned (`unmeasured` OK) + named human + risk-tier footer.
-- [ ] **T15** **Hero overnight run — Sat 27 Sep 22:00 → Sun** (the only overnight; it is run #1 *and* T22's hero run) with full capture (`checklists.md` §3). Measure first-touch p50 → replaces `unmeasured`. **Hard gate (judge mandate, sitting 3): the run must be armed before Sat midnight — no logged run ⇒ no proof for the 15:00 video.**
+- [ ] **T15** **Hero overnight run — Sat 26 Sep 22:00 → Sun 27 Sep** (hero run #2 with full capture per `checklists.md` §3; run #1 was Fri 25 Sep hard gate). Measure first-touch p50 → replaces `unmeasured`. **Hard gate (judge mandate, sitting 3): the run must be armed before Sat midnight — no logged run ⇒ no proof for the 15:00 video.**
 
 ### ⛔ GATE CHECKPOINT — Core-First Warden sign-off required before any Phase 3 task
 M1 done-done = T09–T15 green. The Warden vetoes gate commits until then. (Art I.3)
@@ -46,12 +46,18 @@ M1 done-done = T09–T15 green. The Warden vetoes gate commits until then. (Art 
 - [ ] **T24** Video (2 min, `spec.md` §4 beats, hostile-first among decisions) + fallback recordings **before Sun noon**.
 - [ ] **T25** Submission + Q&A drill (`checklists.md` §6–7). Freeze Sun 15:00.
 
-## Phase 6 — M4 · Stretch (P2 — never at loop expense)
+## Phase 6 — M4 · Enhancements & Stretch (P2 — never at loop expense)
 - [ ] **T26** TF two-knob + €-cost per receipt (Art II.3 / IV.2 `€/listing` column).
 - [ ] **T27** pHash → prior-verdict cache (JEV-style 0-token hits on re-posts).
 - [ ] **T28** Receipt-pack export (Exhibit-style `exhibit.json`) for Q&A appendix.
 - [ ] **T29** Gold padding toward n≥40 (Art IV floor is n≥8).
 - [ ] **T30** Full three-column benchmark incl. p50 latency row.
+- [x] **T31** Deterministic Content Health Pre-Filter (`HEALTH_FLOOR = 25`, Art III content-only, zero seller profiling).
+- [x] **T32** Visual Triage Grid (`triage.html` adhering to Art XIII lockfile + honest CLI `--confirm` integration).
+- [x] **T33** Google Sheets CSV Exporter (`--export-csv` $\to$ `triage_export.csv`).
+- [x] **T34** Watchlist Revisit Loop (resolves pending items in pipeline when market comps arrive).
+- [x] **T35** Event-Driven Topology (`wf-m2-event-driven.json` webhook trigger + async polling fallback pattern).
+- [x] **T36** Apify MCP Scraper Suite (`labrat011/reddit-scraper` defect lookup + `datavoyantlab/n8n-templates-scraper`).
 
 ---
 

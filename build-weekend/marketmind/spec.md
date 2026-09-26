@@ -47,6 +47,9 @@ Failure mode we design against (mentor, Art I): a beautiful safety gate on a pro
 - **Actor:** FlipScout worker (n8n) + ListingPilot worker (n8n).
 - **AC:** scheduled Apify runs (cadence ~5 min) feed both workers: new listings (buy side) and my listings + 3 competitors (sell side). `seen-ids` + pHash dedupe prevent double-offers on re-posts. First-touch latency is **measured** from Apify run timestamps and printed in the digest (or `unmeasured`).
 
+### US-1b: Deterministic Health Pre-Filter (P0 · M1)
+- **AC:** Fast deterministic scan of listing content (title length, description completeness, photo count, price-to-median ratio, freshness) evaluates listing quality before LLM invocation. Items scoring below `HEALTH_FLOOR = 25` emit a receipt with `action: skip`, reason `low_health`, and `policy_branch: prefilter:health`. In accordance with Art III (Anti-Profiling Rule) and ORIGIN §4, zero seller account age or user profiling metrics are evaluated.
+
 ### US-2: DECIDE — comps-first pricing (P0 · M1)
 - **AC:** every listing gets `pursue | escalate | skip` with reason codes. `margin_z` is computed (comps median/MAD), never asked. No/stale comps ⇒ `escalate` (reason `no_comps`). Vision may adjust condition/colorway; **absolute prices come from comps only**. Judge labels outside `questions.json` coerce to `unknown`.
 

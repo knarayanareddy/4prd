@@ -64,13 +64,23 @@
 2. **Judge prompt injection via model provider output** — mitigated by coercion helpers (invented labels → `unknown` → escalate); raise-only rule is the backstop.
 3. **Apify actor output shape drift** — `_normalize` tolerates missing keys (defaults), but a radically different actor still needs the WIRING §1 schema check on Friday.
 
-## Verification run (post-fix battery, 24 Sep 2026)
+## Verification run (post-fix battery, Sat 26 Sep 2026 Round 2)
 ```
 gold eval:        rows=9 mismatches=0 hostile→pursue=0   PASS
-selftest:         run1 {skip 2, esc 3, drafted 1, auto 1} · dedupe 7 · pause ok · AUTO_PAUSE ok · chain ok · URL spoof blocked   PASS
+selftest:         run1 {skip 2, esc 3, drafted 1, auto 1} · dedupe 7 · pause ok · AUTO_PAUSE ok · chain ok · URL spoof blocked · confirm forgery blocked · paused confirm blocked · watchlist cycle-2 resolved · sim cost honest   PASS
 M1+M2-stage:      PASS
-parity v0+v1:     12/12   PASS
+parity v0+v1:     33/33 (standalone files + all 3 inline workflows)   PASS
 gitignore:        marketmind/app/.env + out/ → ignored   verified
 scan stage:       7 items + cycle time printed   verified
 fail-closed:      live w/o keys → SCAN FAILED digest, exit 2   verified
 ```
+
+### Round 2 Hardening (Sat 26 Sep 2026):
+- **C12 (Art III / Constitutional Anti-Profiling):** `health.py` and `wf-m2` stripped of all seller account age/rating signals. Gated purely on listing content (title, desc, photos, price validity, freshness). `HEALTH_FLOOR = 25`. Skips labeled `prefilter:health`.
+- **C13 (Art IV.3 / Cost Honesty):** `costs.py` and runner only track Apify/LLM expenses when `mode == "live"`. Sim runs print `cost: unmeasured (sim run)`.
+- **C14 (Art VII.2 / Forgery Prevention):** `confirm()` now strictly requires an existing receipt with `action_state == "drafted"`. Refuses unknown listings, hostile listings, and paused kill-switch state.
+- **C15 (Art XIII / Design Lockfile):** `triage.html` overhauled to Paper `#F3EFE7` + Ink `#1C1915` + Rule `#C9C2B4`, border-radius 2px, no emoji icons. Buttons labeled honestly (`Mark Reviewed in Browser`), directing to CLI `--confirm`. Proper HTML/CSS attribute escaping prevents injection.
+- **C16 (Watchlist Liveness):** Watchlist revisit loop allows items with newly arrived comps to bypass `is_seen()`, re-evaluating them through the decision pipeline and resolving.
+- **C17 (Canvas Receipt Completeness):** Switch nodes in `wf-m0`, `wf-m1`, and `wf-m2` route `skipped` decisions directly to Airtable receipt generation (100% receipt coverage, US-7).
+- **C18 (Prompt Parity & Voice):** Judge prompt parity aligned with 3 protections; Dutch reseller outreach voice unified across Python and all 3 workflows with non-coercive opt-out clause.
+- **C19 (MCP Pinning):** `@apify/actors-mcp-server` pinned to `@0.16.0` in `mcp_config.json`.

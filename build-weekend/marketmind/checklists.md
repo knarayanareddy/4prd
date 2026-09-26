@@ -59,6 +59,6 @@ Print these. Tick them. Unticked boxes on Sunday are lost points.
 - [ ] "Why n8n, not a script?" → decisions visible/editable/auditable; execution log = accountability.
 - [ ] "Why does a buyer bot carry a T&S gate?" → *"the moment an agent acts on the open market, trust and safety is the product."*
 - [ ] **"How do you know you didn't over-engineer the gate?"** → *"Article I vetoed gate work until the loop closed; run #1 happened on gate v0 — three rules. The gate is 12 lines of policy and closed sets we already had."*
-- [ ] **"How does it scale / why poll every 5 min?"** → *"Dual topology: `wf-m0/m1` runs anywhere on vanilla n8n via cron. For enterprise scale, `wf-m2-event-driven` uses the `@apify/n8n-nodes-apify` trigger (`ACTOR.RUN.SUCCEEDED`) for zero-polling sub-second deal arrival plus Apify Key-Value Store for cloud comps grounding."*
+- [ ] **"How does it scale / why poll every 5 min?"** → *"Dual topology: `wf-m0/m1` runs anywhere on vanilla n8n via cron. For enterprise scale, `wf-m2-event-driven` uses the `@apify/n8n-nodes-apify` trigger (`ACTOR.RUN.SUCCEEDED`) for event-driven deal arrival as soon as a crawl finishes, with async polling as documented network fallback."*
 - [ ] "Who is liable if it offers on a stolen bike?" → it can't decide about people; escalations are the human's call; payments don't exist; the reseller signs.
 - [ ] "Prove hostile→pursue = 0" → run the eval on stage/laptop in 10s (`python skin/policy.py --eval skin/gold.jsonl`).

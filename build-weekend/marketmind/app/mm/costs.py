@@ -1,5 +1,6 @@
 """COSTS — honest per-run cost tracking and unit economics (Darko improvement #3).
-Art IV.3: report what we measured, not what we wish."""
+Art IV.3: report what we measured, not what we wish.
+Sim runs report 'unmeasured (sim run)'; live runs report actual incurred spend."""
 from __future__ import annotations
 from dataclasses import dataclass
 
@@ -42,7 +43,9 @@ class RunCosts:
             return None
         return round(self.total_eur / n_pursued, 3)
 
-    def summary_line(self, n_scanned: int, n_pursued: int) -> str:
+    def summary_line(self, n_scanned: int, n_pursued: int, mode: str = "sim") -> str:
+        if mode != "live":
+            return "cost: unmeasured (sim run — live rates: Apify ~€0.002/item, TF ~€0.001/judge)"
         cpp = self.cost_per_pursue(n_pursued)
         cpp_str = f"€{cpp:.3f}/deal" if cpp is not None else "no deals yet"
         return (f"cost: €{self.total_eur:.3f} total "

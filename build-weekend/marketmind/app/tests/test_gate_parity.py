@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Gate parity (Art II.4): n8n Code-node mirrors must match the Python oracle — v0 AND v1. Needs node >= 18."""
+"""Gate parity (Art II.4): n8n Code-node mirrors must match the Python oracle — v0 AND v1.
+Guards BOTH the standalone policy_v*.js files AND the inline copies in all 3 workflow JSONs (F2-4).
+Needs node >= 18."""
 from __future__ import annotations
 import json, subprocess, sys
 from pathlib import Path
@@ -40,18 +42,38 @@ V1_CASES = [
 
 def run_node(js: str) -> list[dict]:
     out = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=30)
+    if out.returncode != 0:
+        raise RuntimeError(f"node error: {out.stderr}")
     return json.loads(out.stdout.strip().splitlines()[-1])
+
+def extract_inline_policy(wf_path: Path) -> str:
+    wf = json.loads(wf_path.read_text())
+    code = next(n["parameters"]["jsCode"] for n in wf["nodes"] if "POLICY" in n["name"])
+    return code.split("for (const it of items)")[0]
 
 def main() -> int:
     ok = True
-    js0 = (ROOT / "app" / "n8n" / "policy_v0_node.js").read_text()
-    js1 = (ROOT / "app" / "n8n" / "policy_v1_node.js").read_text()
+    n8n_dir = ROOT / "app" / "n8n"
+
+    # 1. Test standalone policy_v0_node.js
+    js0 = (n8n_dir / "policy_v0_node.js").read_text()
     exp0 = [{"action": r.action.value, "reason_codes": r.reason_codes} for r in (skin.gate_v0(c) for c in V0_CASES)]
     got0 = run_node(js0 + f"\nconst C={json.dumps(V0_CASES)}; console.log(JSON.stringify(C.map(gateV0)));")
     for i, (e, j) in enumerate(zip(exp0, got0)):
         same = e["action"] == j["action"] and e["reason_codes"] == j["reason_codes"]
         ok &= same
-        print(f"{'✓' if same else '✗'} v0 case {i}: py={e} js={ {k: j[k] for k in e} }")
+        print(f"{'✓' if same else '✗'} v0 (file) case {i}: py={e} js={ {k: j[k] for k in e} }")
+
+    # 2. Test inline wf-m0-scan-decide.json
+    inline_js0 = extract_inline_policy(n8n_dir / "wf-m0-scan-decide.json")
+    got_m0 = run_node(inline_js0 + f"\nconst C={json.dumps(V0_CASES)}; console.log(JSON.stringify(C.map(gateV0)));")
+    for i, (e, j) in enumerate(zip(exp0, got_m0)):
+        same = e["action"] == j["action"] and e["reason_codes"] == j["reason_codes"]
+        ok &= same
+        print(f"{'✓' if same else '✗'} v0 (wf-m0 inline) case {i}: py={e} js={ {k: j[k] for k in e} }")
+
+    # 3. Test standalone policy_v1_node.js
+    js1 = (n8n_dir / "policy_v1_node.js").read_text()
     payload1 = [[a, f] for a, f in V1_CASES]
     exp1 = [{"action": (skin.gate_v1(a, f)).action.value, "reason_codes": (skin.gate_v1(a, f)).reason_codes}
             for a, f in V1_CASES]
@@ -59,8 +81,25 @@ def main() -> int:
     for i, (e, j) in enumerate(zip(exp1, got1)):
         same = e["action"] == j["action"] and e["reason_codes"] == j["reason_codes"]
         ok &= same
-        print(f"{'✓' if same else '✗'} v1 case {i}: py={e} js={ {k: j[k] for k in e} }")
-    print("PARITY (v0+v1):", "PASS" if ok else "FAIL")
+        print(f"{'✓' if same else '✗'} v1 (file) case {i}: py={e} js={ {k: j[k] for k in e} }")
+
+    # 4. Test inline wf-m1-full.json
+    inline_js1 = extract_inline_policy(n8n_dir / "wf-m1-full.json")
+    got_m1 = run_node(inline_js1 + f"\nconst C={json.dumps(payload1)}; console.log(JSON.stringify(C.map(c => gateV1(c[0], c[1]))));")
+    for i, (e, j) in enumerate(zip(exp1, got_m1)):
+        same = e["action"] == j["action"] and e["reason_codes"] == j["reason_codes"]
+        ok &= same
+        print(f"{'✓' if same else '✗'} v1 (wf-m1 inline) case {i}: py={e} js={ {k: j[k] for k in e} }")
+
+    # 5. Test inline wf-m2-event-driven.json
+    inline_js2 = extract_inline_policy(n8n_dir / "wf-m2-event-driven.json")
+    got_m2 = run_node(inline_js2 + f"\nconst C={json.dumps(payload1)}; console.log(JSON.stringify(C.map(c => gateV1(c[0], c[1]))));")
+    for i, (e, j) in enumerate(zip(exp1, got_m2)):
+        same = e["action"] == j["action"] and e["reason_codes"] == j["reason_codes"]
+        ok &= same
+        print(f"{'✓' if same else '✗'} v1 (wf-m2 inline) case {i}: py={e} js={ {k: j[k] for k in e} }")
+
+    print(f"PARITY (standalone files + all 3 inline workflows: {len(exp0)*2 + len(exp1)*3} checks):", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
 if __name__ == "__main__":

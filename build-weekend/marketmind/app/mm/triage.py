@@ -1,86 +1,78 @@
-"""TRIAGE — visual card grid for escalated and reviewed listings (Darko improvement #2).
+"""TRIAGE — visual inspection grid for escalated and reviewed listings (Darko improvement #2).
 Generates app/out/triage.html for glanceable human-in-the-loop review.
-Not an automated decider — presents receipts and facts cleanly for operator verification."""
+Strictly adheres to Art XIII & design.md lockfile: Paper #F3EFE7, Ink #1C1915, Rule #C9C2B4, Brick #8C3A2B.
+Radius 2px. No gradients. No emoji icons. Honest affordances (directs to CLI --confirm)."""
 from __future__ import annotations
-import html
+import html, json
 from pathlib import Path
 
 CARD_CSS = """
+* { box-sizing: border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #0f1117;
-  color: #e6edf3;
+  font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #F3EFE7;
+  color: #1C1915;
   margin: 0;
   padding: 24px;
 }
 header {
+  border-bottom: 2px solid #C9C2B4;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #30363d;
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  align-items: baseline;
 }
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   margin: 0;
-  font-weight: 600;
-  color: #58a6ff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1C1915;
+  text-transform: uppercase;
 }
 .stats {
-  font-size: 0.9rem;
-  color: #8b949e;
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: #55514B;
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 .card {
-  background: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  overflow: hidden;
+  background: #FFFFFF;
+  border: 1px solid #C9C2B4;
+  border-radius: 2px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
-.card:hover {
-  transform: translateY(-2px);
-  border-color: #58a6ff;
 }
 .card img {
   width: 100%;
-  height: 190px;
+  height: 180px;
   object-fit: cover;
-  background: #21262d;
+  background: #E8E3DA;
+  border-bottom: 1px solid #C9C2B4;
 }
 .no-photo {
-  height: 190px;
-  background: #21262d;
+  width: 100%;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8b949e;
-  font-size: 0.9rem;
+  background: #E8E3DA;
+  color: #7A756D;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #C9C2B4;
 }
-.card .body {
+.body {
   padding: 14px;
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 8px;
-}
-.card .title {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #f0f6fc;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .price-row {
   display: flex;
@@ -88,132 +80,121 @@ h1 {
   align-items: baseline;
 }
 .price {
-  font-size: 1.3rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #3fb950;
+  color: #1C1915;
 }
 .health-badge {
+  font-family: "IBM Plex Mono", monospace;
   font-size: 0.75rem;
+  padding: 2px 6px;
+  border: 1px solid #C9C2B4;
+  border-radius: 2px;
+  background: #F3EFE7;
+  color: #55514B;
+}
+.title {
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: #1f6feb26;
-  color: #58a6ff;
-  border: 1px solid #1f6feb;
+  line-height: 1.3;
 }
 .meta {
-  font-size: 0.8rem;
-  color: #8b949e;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  color: #55514B;
   line-height: 1.4;
 }
-.badge {
+.status-tag {
   display: inline-block;
+  padding: 2px 5px;
+  font-weight: 700;
   font-size: 0.72rem;
-  font-weight: 500;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-right: 4px;
-  margin-top: 4px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-family: "IBM Plex Mono", monospace;
 }
-.badge-esc {
-  background: #d2992226;
-  color: #f2cc60;
-  border: 1px solid #bb8009;
+.status-drafted {
+  border: 1px solid #1C1915;
+  color: #1C1915;
+  background: #E8E3DA;
 }
-.badge-skip {
-  background: #f8514926;
-  color: #ff7b72;
-  border: 1px solid #da3633;
+.status-escalated {
+  border: 1px solid #8C3A2B;
+  color: #8C3A2B;
+  background: #F9EBE8;
 }
-.badge-drafted {
-  background: #23863626;
-  color: #3fb950;
-  border: 1px solid #238636;
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
-.bar-bg {
-  height: 6px;
-  background: #21262d;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 4px;
+.badge {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: #F3EFE7;
+  border: 1px solid #C9C2B4;
+  color: #55514B;
 }
-.bar-fill {
-  height: 100%;
-  border-radius: 3px;
+.cli-box {
+  background: #F3EFE7;
+  border: 1px solid #C9C2B4;
+  border-radius: 2px;
+  padding: 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  word-break: break-all;
+  color: #1C1915;
 }
-.bar-green { background: #3fb950; }
-.bar-yellow { background: #d29922; }
-.bar-red { background: #f85149; }
 .actions {
   display: flex;
-  border-top: 1px solid #30363d;
+  border-top: 1px solid #C9C2B4;
 }
 .actions button {
   flex: 1;
-  padding: 10px;
+  padding: 8px;
+  background: #FFFFFF;
   border: none;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 0.8rem;
   font-weight: 600;
-  transition: background 0.15s ease;
+  color: #1C1915;
 }
-.btn-pursue {
-  background: #238636;
-  color: #ffffff;
-}
-.btn-pursue:hover {
-  background: #2ea043;
-}
-.btn-dismiss {
-  background: #21262d;
-  color: #ff7b72;
-}
-.btn-dismiss:hover {
-  background: #b62324;
-  color: #ffffff;
+.actions button:hover {
+  background: #E8E3DA;
 }
 .toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #238636;
-  color: white;
+  background: #1C1915;
+  color: #F3EFE7;
   padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: 2px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
   display: none;
+  max-width: 450px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 """
 
 
-def _bar_class(margin_z: float | None) -> str:
-    if margin_z is None:
-        return "bar-yellow"
-    if margin_z > 2.5:
-        return "bar-red"
-    if margin_z > 0.5:
-        return "bar-green"
-    return "bar-yellow"
-
-
-def _bar_width(margin_z: float | None) -> int:
-    if margin_z is None:
-        return 10
-    return min(100, max(8, int(margin_z * 30)))
-
-
 def render(run_id: str, receipts: list[dict], items_by_id: dict[str, dict]) -> str:
-    """Returns responsive HTML string for visual escalation and review triage."""
+    """Returns responsive HTML string for visual escalation and review triage adhering to design.md."""
     escalated = [r for r in receipts if r.get("action_state") == "escalated"]
     drafted = [r for r in receipts if r.get("action_state") in ("drafted", "pursued_assisted")]
     skipped = [r for r in receipts if r.get("action_state") == "skipped"]
 
     cards_html = []
-    # Display escalated first, then drafted for review
     display_rows = escalated + drafted
 
     for r in display_rows:
-        item = items_by_id.get(r.get("listing_id"), {})
+        lid = str(r.get("listing_id", ""))
+        item = items_by_id.get(lid, {})
         imgs = item.get("images") or []
         img_url = imgs[0] if imgs else ""
         mz = r.get("scores", {}).get("margin_z")
@@ -221,79 +202,81 @@ def render(run_id: str, receipts: list[dict], items_by_id: dict[str, dict]) -> s
         reasons = r.get("reason_codes", [])
         state = r.get("action_state", "escalated")
 
-        badge_cls = "badge-drafted" if state in ("drafted", "pursued_assisted") else "badge-esc"
-        badges = "".join(f'<span class="badge {badge_cls}">{html.escape(rc)}</span>' for rc in reasons)
+        badge_cls = "status-drafted" if state in ("drafted", "pursued_assisted") else "status-escalated"
+        status_word = "DRAFT AWAITING HUMAN" if state == "drafted" else state.upper()
+        badges_markup = "".join(f'<span class="badge">{html.escape(rc, quote=True)}</span>' for rc in reasons)
 
         mz_display = f"{mz:.1f}σ margin" if mz is not None else "no comps"
-        bar_cls = _bar_class(mz)
-        bar_w = _bar_width(mz)
-
-        seller = item.get("seller") or {}
-        seller_name = seller.get("name", "private")
-        ratings = seller.get("rating_count", 0)
-
-        photo_markup = (f'<img src="{html.escape(img_url)}" alt="item photo" loading="lazy" '
+        photo_markup = (f'<img src="{html.escape(img_url, quote=True)}" alt="item photo" loading="lazy" '
                         f'onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'no-photo\\\'>Photo Unavailable</div>\';">'
                         if img_url else '<div class="no-photo">No Photo Available</div>')
 
+        cli_hint = (f'python3 app/run_walking_skeleton.py --confirm {lid}'
+                    if state == "drafted" else f'Status: {state.upper()} · review receipts')
+
         card = f"""
-        <div class="card" data-listing-id="{html.escape(str(r.get('listing_id')))}">
+        <div class="card" data-listing-id="{html.escape(lid, quote=True)}">
           {photo_markup}
           <div class="body">
             <div class="price-row">
-              <div class="price">€{item.get('price_eur', '?')}</div>
-              <span class="health-badge">Health {h_score}/100</span>
+              <div class="price">€{html.escape(str(item.get('price_eur', '?')), quote=True)}</div>
+              <span class="health-badge">Listing Health {html.escape(str(h_score), quote=True)}/100</span>
             </div>
-            <div class="title">{html.escape(str(item.get('title', r.get('listing_id'))))}</div>
+            <div class="title">{html.escape(str(item.get('title', lid)), quote=True)}</div>
             <div class="meta">
-              Comps: {mz_display} · State: <strong>{state}</strong><br>
-              Seller: {html.escape(str(seller_name))} ({ratings} reviews)
+              <span class="status-tag {badge_cls}">{html.escape(status_word, quote=True)}</span> · {html.escape(mz_display, quote=True)}<br>
+              ID: {html.escape(lid, quote=True)}
             </div>
-            <div class="bar-bg"><div class="bar-fill {bar_cls}" style="width: {bar_w}%"></div></div>
-            <div>{badges}</div>
+            <div class="badges">{badges_markup}</div>
+            <div class="cli-box">CLI: <code>{html.escape(cli_hint, quote=True)}</code></div>
           </div>
           <div class="actions">
-            <button class="btn-pursue" onclick="handleAction('{html.escape(str(r.get('listing_id')))}', 'pursue')">✅ Pursue / Approve</button>
-            <button class="btn-dismiss" onclick="handleAction('{html.escape(str(r.get('listing_id')))}', 'dismiss')">❌ Dismiss</button>
+            <button type="button" class="btn-review" data-id="{html.escape(lid, quote=True)}" data-state="{html.escape(state, quote=True)}">Mark Reviewed in Browser</button>
           </div>
-        </div>"""
+        </div>
+        """
         cards_html.append(card)
 
-    cards_joined = "\n".join(cards_html) if cards_html else '<p class="stats">No escalated listings this cycle — all items processed fail-closed or auto-drafted.</p>'
+    cards_joined = "\n".join(cards_html) if cards_html else "<p style='color:#7A756D;'>No escalated or drafted items this run.</p>"
+    total_count = len(receipts)
+    esc_count = len(escalated)
+    draft_count = len(drafted)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MarketMind Triage — {html.escape(run_id)}</title>
+  <title>MarketMind Triage — {html.escape(run_id, quote=True)}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>{CARD_CSS}</style>
 </head>
 <body>
   <header>
-    <h1>🏪 MarketMind Triage <span style="font-size:0.9rem;color:#8b949e;font-weight:400">[{html.escape(run_id)}]</span></h1>
-    <div class="stats">
-      <strong>{len(escalated)}</strong> escalated · <strong>{len(drafted)}</strong> drafted · <strong>{len(skipped)}</strong> skipped
-    </div>
+    <h1>MarketMind Triage</h1>
+    <div class="stats">{html.escape(run_id, quote=True)} · {total_count} processed · {esc_count} escalated · {draft_count} drafted</div>
   </header>
   <div class="grid">
     {cards_joined}
   </div>
-  <div id="toast" class="toast">Action recorded</div>
+  <div id="toast" class="toast">Action noted</div>
   <script>
-    function handleAction(id, action) {{
-      const card = document.querySelector('[data-listing-id="' + id + '"]');
-      if (card) {{
-        card.style.opacity = '0.35';
-        card.style.filter = 'grayscale(80%)';
-        card.style.pointerEvents = 'none';
-      }}
-      const toast = document.getElementById('toast');
-      toast.textContent = (action === 'pursue' ? '✅ Pursue initiated for ' : '❌ Dismissed ') + id;
-      toast.style.display = 'block';
-      setTimeout(() => {{ toast.style.display = 'none'; }}, 2500);
-      console.log('TRIAGE_ACTION:', id, action);
-    }}
+    document.querySelectorAll('.btn-review').forEach(function(btn) {{
+      btn.addEventListener('click', function() {{
+        var id = this.getAttribute('data-id');
+        var state = this.getAttribute('data-state');
+        var card = document.querySelector('[data-listing-id="' + CSS.escape(id) + '"]');
+        if (card) {{
+          card.style.opacity = '0.5';
+        }}
+        var toast = document.getElementById('toast');
+        var msg = (state === 'drafted')
+          ? 'Noted locally. To emit signed receipt, run CLI: python3 app/run_walking_skeleton.py --confirm ' + id
+          : 'Escalation noted locally for ' + id;
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(function() {{ toast.style.display = 'none'; }}, 3500);
+      }});
+    }});
   </script>
 </body>
 </html>"""

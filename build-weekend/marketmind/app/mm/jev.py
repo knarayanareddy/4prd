@@ -1,64 +1,48 @@
-"""JEV — System 1 Decision & Safety Gateway (typesafe.ai / OpenRouter).
-Provides fast, calibrated discrete classification over closed label sets.
-Inherent prompt injection immunity (Art VI): discriminative classification
-cannot be coerced by adversarial generative instructions."""
+"""JEV — Heuristic decision & safety triage rules (spec'd P2 for full model).
+Provides fast, discriminative triage across closed sets without generative LLMs.
+Art VI & Art IV.3: honest heuristic rules, no invented confidence numbers."""
 from __future__ import annotations
+import re
 
-SAFETY_BUCKETS = [
-    "clean",
-    "injection_or_jailbreak",
-    "offplatform_payment",
-    "counterfeit",
-    "weapon",
-    "pii",
-]
-
-INBOUND_LABELS = [
-    "inbound_availability",
-    "dispute_t3",
-    "offer_counter",
-    "injection_or_jailbreak",
-    "needs_human",
-]
-
-# Markers for discriminative classification
-_INJECTION_MARKERS = (
-    "ignore previous", "disregard", "system prompt", "jailbreak", "accept any offer",
-    "new instructions", "developer mode", "override policy", "forget your rules",
-    "output pursue", "bypass"
+INJECTION_RE = re.compile(
+    r"(ignore\s+(all\s+)?(previous|prior|above|system)\s+(instructions|prompts|guidance|rules|directives)|"
+    r"disregard\s+(all\s+)?(previous|prior|above|system)\s+(instructions|prompts|guidance|rules)|"
+    r"jailbreak|accept\s+any\s+offer|forget\s+your\s+rules|override\s+policy|developer\s+mode)",
+    re.I
 )
-_DISPUTE_MARKERS = (
+
+DISPUTE_WORDS = (
     "broken", "kapot", "refund", "beschadigd", "defect", "return", "restitution",
-    "terugbetaling", "doesnt work", "doesn't work", "werkt niet", "geld terug", "oplichting"
+    "terugbetaling", "doesnt work", "doesn't work", "werkt niet", "geld terug",
+    "ik wil mijn geld", "oplichting", "politie"
 )
-_AVAIL_MARKERS = (
+
+AVAIL_WORDS = (
     "nog beschikbaar", "beschikbaar?", "still available", "available?", "is het nog",
     "kan ik het ophalen", "is dit er nog"
 )
 
 
-def classify_inbound(text: str, mode: str = "sim") -> dict:
-    """Classifies inbound buyer message using System 1 classification.
-    Returns: {label: str, confidence: float, tier: str, outcome: str, reply: str | None}"""
+def classify_inbound(text: str) -> dict:
+    """Classifies inbound buyer messages into closed-set action states.
+    Returns: {label: str, outcome: str, tier: str, reply: str | None, reasons: list[str]}"""
     t = (text or "").lower()
 
-    # Check for prompt injection / jailbreak (Art VI)
-    if any(m in t for m in _INJECTION_MARKERS):
+    # 1. Hostile Screen / Prompt Injection (Art VI)
+    if INJECTION_RE.search(t):
         return {
             "label": "injection_or_jailbreak",
-            "confidence": 0.98,
             "outcome": "skipped",
             "tier": "T3",
             "reply": None,
             "reasons": ["injection_or_jailbreak"],
-            "note": "System-1 injection defense: discriminative classification immune to jailbreak (Art VI)",
+            "note": "hostile input — never auto, never engage (Art VI)",
         }
 
-    # Check for disputes (Art VII.4)
-    if any(m in t for m in _DISPUTE_MARKERS):
+    # 2. Disputes — must ALWAYS escalate to human (Art VII.4 / T3)
+    if any(m in t for m in DISPUTE_WORDS):
         return {
             "label": "dispute_t3",
-            "confidence": 0.95,
             "outcome": "escalated",
             "tier": "T3",
             "reply": None,
@@ -66,21 +50,20 @@ def classify_inbound(text: str, mode: str = "sim") -> dict:
             "note": "human writes the reply — never auto (Art VII.4)",
         }
 
-    # Check for availability queries
-    if any(m in t for m in _AVAIL_MARKERS):
+    # 3. Availability inquiries (T1 draft-assist)
+    if any(m in t for m in AVAIL_WORDS):
         return {
             "label": "inbound_availability",
-            "confidence": 0.92,
             "outcome": "drafted",
             "tier": "T1",
             "reply": "Hoi! Ja, is nog beschikbaar. Wanneer zou het jou uitkomen?",
             "reasons": ["inbound_availability"],
-            "note": "fast System-1 availability draft",
+            "note": "draft availability response",
         }
 
+    # 4. Unclassified inquiries escalate to human (T2)
     return {
         "label": "needs_human",
-        "confidence": 0.70,
         "outcome": "escalated",
         "tier": "T2",
         "reply": None,
@@ -89,24 +72,13 @@ def classify_inbound(text: str, mode: str = "sim") -> dict:
     }
 
 
-def classify_safety(text: str, mode: str = "sim") -> dict:
-    """Classifies listing text for hostile content using System 1 discriminative routing."""
+def classify_safety(text: str) -> dict:
+    """Checks listing text against closed safety categories."""
     t = (text or "").lower()
-    scores = {b: 0.01 for b in SAFETY_BUCKETS}
-
-    if any(m in t for m in _INJECTION_MARKERS):
-        scores["injection_or_jailbreak"] = 0.99
-    elif any(p in t for p in ("iban", "tikkie", "paypal.me", "transfer")):
-        scores["offplatform_payment"] = 0.95
-    elif any(c in t for c in ("fake", "replica", "1:1 clone", "namaak")):
-        scores["counterfeit"] = 0.90
-    else:
-        scores["clean"] = 0.95
-
-    top_label = max(scores, key=scores.get)
-    return {
-        "top_label": top_label,
-        "confidence": scores[top_label],
-        "distribution": scores,
-        "is_safe": top_label == "clean" and scores["clean"] >= 0.85,
-    }
+    if INJECTION_RE.search(t):
+        return {"top_label": "injection_or_jailbreak", "is_safe": False}
+    if any(p in t for p in ("iban", "tikkie", "paypal.me", "wire transfer")):
+        return {"top_label": "offplatform_payment", "is_safe": False}
+    if any(c in t for c in ("replica", "namaak", "1:1 clone")):
+        return {"top_label": "counterfeit", "is_safe": False}
+    return {"top_label": "clean", "is_safe": True}

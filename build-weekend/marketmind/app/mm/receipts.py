@@ -20,8 +20,8 @@ def begin(item: dict) -> dict:
 
 
 def commit(r: dict, action: str, reasons: list[str], state: str, tier: str, gate: str,
-           scores: dict | None = None) -> dict:
-    row = {**r, "policy_branch": f"gate_{gate}:{action}", "action_state": state, "tier": tier,
+           scores: dict | None = None, policy_branch: str | None = None) -> dict:
+    row = {**r, "policy_branch": policy_branch or f"gate_{gate}:{action}", "action_state": state, "tier": tier,
            "reason_codes": reasons, "scores": scores or {},
            "action_state_note": "drafted != sent (Art VII.2)" if state == "drafted" else ""}
     return row

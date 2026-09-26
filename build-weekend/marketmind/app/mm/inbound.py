@@ -4,10 +4,24 @@ from __future__ import annotations
 from .decide import skin  # oracle phrases (INJECTION_PHRASES) — single source
 from . import jev
 
+DISPUTE_WORDS = (
+    "broken", "kapot", "refund", "beschadigd", "defect", "return", "restitution",
+    "terugbetaling", "doesnt work", "doesn't work", "werkt niet", "ik wil mijn geld",
+    "geld terug", "oplichting"
+)
+AVAIL_WORDS = (
+    "nog beschikbaar", "beschikbaar?", "still available", "available?", "is het nog",
+    "kan ik het ophalen", "is dit er nog"
+)
+
 
 def classify(text: str, backend: str = "jev") -> dict:
+    """Triage inbound buyer messages.
+    Backend 'jev' uses discriminative pattern heuristics; 'legacy' uses exact oracle phrases."""
     if backend == "jev":
         return jev.classify_inbound(text)
+
+    # Legacy baseline rule matcher
     t = (text or "").lower()
     if any(p in t for p in skin.INJECTION_PHRASES):
         return {"outcome": "skipped", "reasons": ["injection_or_jailbreak"], "tier": "T3", "reply": None,
