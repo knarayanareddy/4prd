@@ -14,7 +14,7 @@ function gateV0(facts) {
   if (mz === null) return { action: "escalate", reason_codes: ["no_comps"], human_required: true };
   if (mz > 2.5) return { action: "escalate", reason_codes: ["price_too_good"], human_required: true };
   if (mz > 0 && mz <= 2.5) return { action: "pursue", reason_codes: ["ok"], human_required: false };
-  return { action: "escalate", reason_codes: ["unknown"], human_required: true };
+  return { action: "escalate", reason_codes: ["no_margin"], human_required: true };  // mz <= 0: asking at or above comps — no deal
 }
 
 module.exports = { gateV0 };

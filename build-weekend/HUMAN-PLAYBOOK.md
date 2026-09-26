@@ -31,7 +31,7 @@ Open `marketmind/kickoff/PREREGISTRATION.md` → fill the **frozen date + your n
 - ✅ **Done when:** file filled + dated + screenshot in `evidence/`.
 
 ### 0.4 Get the repo onto your machine — ⏱ 10 min
-1. Download `marketmind-build-weekend.bundle` from the workspace (single file, 108K).
+1. Download `marketmind-build-weekend.bundle` from the workspace (single file, 177K).
 2. `git clone marketmind-build-weekend.bundle marketmind && cd marketmind`
 3. Push to GitHub: `gh repo create marketmind --private --source=. --push`  *(or: create an empty repo `knarayanareddy/marketmind` in the browser, then `git remote add origin git@github.com:knarayanareddy/marketmind.git && git push -u origin main`)*
 4. Sanity: run the four proofs — **all must print PASS**:

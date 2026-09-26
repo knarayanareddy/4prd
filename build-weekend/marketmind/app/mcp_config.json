@@ -9,7 +9,7 @@
         "labrat011/reddit-scraper"
       ],
       "env": {
-        "APIFY_TOKEN": "${APIFY_TOKEN}"
+        "APIFY_TOKEN": "${APFY_TOKEN}"
       },
       "description": "On-demand qualitative intel: defect traps, long-tail collector valuation, and secondhand trend discovery via labrat011/reddit-scraper"
     },
@@ -22,7 +22,7 @@
         "datavoyantlab/n8n-templates-scraper"
       ],
       "env": {
-        "APIFY_TOKEN": "${APIFY_TOKEN}"
+        "APIFY_TOKEN": "${APFY_TOKEN}"
       },
       "description": "On-demand n8n community workflow template discovery, node benchmarking, and raw JSON extraction via datavoyantlab/n8n-templates-scraper"
     }

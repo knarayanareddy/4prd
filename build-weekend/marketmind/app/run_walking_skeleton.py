@@ -41,10 +41,9 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
                    "counts": {"skipped": 0, "escalated": 0, "drafted": 0, "pursued_auto": 0},
                    "deduped": 0, "paused": st.paused(), "hostile_pursue": 0}
         (OUT / "run-summary.json").write_text(json.dumps(summary, indent=2))
+        print(f"FEED ERROR: {e}")
         if not only:
             print(digest)
-        else:
-            print(f"FEED ERROR ({only}): {e}")
         return summary
     if only == "scan":
         # read-only observation stage: no dedupe, no decisions, no writes (T05 smoke, WIRING §6)
@@ -108,9 +107,12 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
         h_score = health.score(item, cat_median)
         item["health"] = h_score
         if h_score < health.HEALTH_FLOOR:
-            rows.append(receipts.commit(r, "skip", ["low_health"], "skipped",
-                                        "T0", gate, scores={"health": h_score},
-                                        policy_branch="prefilter:health"))
+            row_committed = receipts.commit(r, "skip", ["low_health"], "skipped",
+                                            "T0", gate, scores={"health": h_score},
+                                            policy_branch="prefilter:health")
+            rows.append(row_committed)
+            receipts.write(OUT / "receipts.jsonl", [row_committed])
+            st.save()
             continue
 
         facts = decide.facts_for(item, comps)
@@ -164,10 +166,12 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
             seed = expand.extract_seeds(item, d.action)
             st.add_seed(seed)
 
-        rows.append(receipts.commit(r, d.action, d.reasons, state_name, d.tier, d.gate,
-                                    scores={"margin_z": facts["margin_z"], "health": h_score}))
+        row_committed = receipts.commit(r, d.action, d.reasons, state_name, d.tier, d.gate,
+                                        scores={"margin_z": facts["margin_z"], "health": h_score})
+        rows.append(row_committed)
+        receipts.write(OUT / "receipts.jsonl", [row_committed])
+        st.save()
 
-    st.save()
     h1 = st.h1()
     learned = f"H1 accepted {h1['accepted']}/{h1['offers']} · H2 not-run" if h1["offers"] else "unmeasured (H1 0/0 · H2 not-run)"
     timing = f"{meta['cycle_time_s']}s source-read ({meta.get('timing_note', 'live measured')})"
@@ -193,7 +197,6 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
                            outreach_used=st.outreach_used(),
                            cost_line=cost_line, watchlist_info=wl_info,
                            triage_file=str(OUT / "triage.html"))
-    receipts.write(OUT / "receipts.jsonl", rows)  # append-only, hash-chained (Art VII.1)
     (OUT / "digest.txt").write_text(digest)
     counts = {s: sum(1 for r in rows if r["action_state"] == s)
               for s in ("skipped", "escalated", "drafted", "pursued_auto")}
@@ -216,6 +219,7 @@ def run(mode: str, gate: str, only: str = "", out_dir: str | None = None) -> dic
                    "resolved_this_cycle": watchlist_resolved,
                },
                "expansion": {
+                   "status": "spec_queued_not_wired",
                    "new_queries": expansion_queries,
                    "seller_profiles": len(expansion_sellers),
                },
@@ -408,6 +412,10 @@ def selftest() -> int:
         fails.append("gate_v0 pursued hostile text")
 
     # Darko improvement #1: Health pre-filter
+    lh_fixture = json.loads((APP / "fixtures" / "low_health_listing.json").read_text(encoding="utf-8"))
+    lh_score = health.score(lh_fixture)
+    if lh_score >= health.HEALTH_FLOOR:
+        fails.append(f"health filter passed low_health_listing.json fixture (score={lh_score} >= {health.HEALTH_FLOOR})")
     junk_item = {"id": "t-junk", "title": "X", "price_eur": 10, "images": [],
                  "seller": {}, "description": "", "posted_at": ""}
     if health.score(junk_item) >= health.HEALTH_FLOOR:

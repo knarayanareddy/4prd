@@ -43,7 +43,7 @@ Context docs (already written): `../01-expert-panel-review.md`, `../02-listguard
 # 1. Run local walking skeleton (sim mode, deterministic)
 python3 app/run_walking_skeleton.py
 
-# 2. Run full 7-step self-test verification battery
+# 2. Run full self-test verification battery
 python3 app/run_walking_skeleton.py --selftest
 
 # 3. Human confirm a drafted offer -> emit pursued_assisted signed receipt (Art VII.2)

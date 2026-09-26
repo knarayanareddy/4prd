@@ -22,4 +22,4 @@ MODE_NOTE = "simulated" if os.environ.get("MM_MODE", "sim") == "sim" else "live"
 
 
 def tier_for(category: str) -> str:
-    return CATEGORY_POLICY.get((category or "other").lower(), "T2")
+    return CATEGORY_POLICY.get((category or "other").lower(), "T3")  # fail-closed: unknown categories not auto-eligible

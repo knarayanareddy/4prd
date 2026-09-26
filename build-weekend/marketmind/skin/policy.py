@@ -83,7 +83,7 @@ def gate_v0(facts: dict[str, Any]) -> Result:
         return Result(Action.escalate, ["no_comps"] if mz is None else ["price_too_good"], True)
     if 0.0 < mz <= 2.5:                             # plausible underpricing band
         return Result(Action.pursue, ["ok"], False)  # tier still applies outside the gate
-    return Result(Action.escalate, ["unknown"], True)
+    return Result(Action.escalate, ["no_margin"], True)  # mz <= 0: asking at or above comps — no deal
 
 
 # ---------- GATE V1 (M2+: closed sets + typed questions + deterministic facts) ----------
